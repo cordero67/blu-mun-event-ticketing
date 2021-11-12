@@ -48,7 +48,7 @@ contract("Exchange", ([deployer, feeAccount, user1]) => {
     });
   });
 
-  describe("deposit ether");
+  describe("deposit ether", () => {});
 
   describe("deposits tokens", () => {
     let result;

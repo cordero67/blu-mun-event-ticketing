@@ -5,7 +5,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 // imports the Token contract not a specific token
 import "./Token.sol";
 
-// TODO:
+// TODO LIST:
 // [X] Set the fee account
 // [X] Deposit Ether
 // [ ] Withdraw Ether
