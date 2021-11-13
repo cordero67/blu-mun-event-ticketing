@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+//import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 // ----------------------------------------------------------------------------
 // ERC Token Standard #20 Interface
@@ -51,19 +51,35 @@ contract ERC20Interface {
     );
 }
 
+
+contract EventTicketingFactory {
+    address[] public deployedGAEvents;
+    
+    function createGATickets(uint _tickets) public {
+        address newGAEvent = address(new GAEventTickets(_tickets, msg.sender));
+        deployedGAEvents.push(newGAEvent);
+    }
+    
+    function getDeployedGAEventTickets() public view returns(address[] memory) {
+        return deployedGAEvents;
+    }
+}
+
+// Code from DAPP University
 // @title A title that should describe the contract/interface
 /// @author The name of the author
 /// @notice Explain to an end user what this does
 /// @dev Explain to a developer any extra details
-contract TempToken is ERC20Interface {
-    using SafeMath for uint256;
+contract GAEventTickets is ERC20Interface {
+    //using SafeMath for uint256;
 
-    string public name = "Blu Mun Token";
+    string public name = "Blu Mun GA Tickets";
     string public symbol = "BLMN";
-    uint256 public decimals = 18;
+    uint256 public decimals = 0;
     uint256 public totalSupply;
-    
-    // keeps track of each address' token balance
+    address public owner; // NOT part of ERC20Interface/Standard
+
+    // keeps track of each address' ticket balance
     mapping(address => uint256) public balanceOf;
 
     // keeps track of amount of an address' tokens that can be transferred by another addresses
@@ -72,7 +88,8 @@ contract TempToken is ERC20Interface {
     // transfer is performed by "transferFrom()" where receiver can be second address or a third party address
     mapping(address => mapping(address => uint256)) public allowance;
 
-    address public owner; // NOT part of ERC20Interface/Standard
+
+    enum State {Running, Stopped, Inactive}
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(
@@ -81,22 +98,22 @@ contract TempToken is ERC20Interface {
         uint256 value
     );
 
-    constructor() public {
-        totalSupply = 1000000 * (10**decimals);
-        owner = msg.sender; // identify contract deployer as owner
+    constructor(uint _tickets, address _owner) public {
+        totalSupply = _tickets * (10**decimals);
+        owner = _owner; // identify contract deployer as owner
         balanceOf[owner] = totalSupply; // give all initial token supply to owner
     }
-    
+
     // helper function that performs token exchange between accounts
     function _transfer(
         address _from,
         address _to,
         uint256 _value
     ) internal returns (bool success) {
-        //balanceOf[_from] -= _value;
-        balanceOf[_from] = balanceOf[_from].sub(_value);
-        //balanceOf[_to] += _value;
-        balanceOf[_to] = balanceOf[_to].add(_value);
+        balanceOf[_from] -= _value;
+        //balanceOf[_from] = balanceOf[_from].sub(_value);
+        balanceOf[_to] += _value;
+        //balanceOf[_to] = balanceOf[_to].add(_value);
         emit Transfer(_from, _to, _value);
         return true;
     }
@@ -127,9 +144,10 @@ contract TempToken is ERC20Interface {
         return true;
     }
 
-    // transfers tokens from one account to second account by a third account ("msg.sender")
+    // transfers tokens from one account "_from" to second account "_to" by a third account ("msg.sender")
     // second and third accounts can be the same address
     // third account must be approved by first account i.e. first account's tokens that will be transferred
+    // allowance amount defined by "allowance[_from][msg.sender]" must be established
     function transferFrom(
         address _from,
         address _to,
@@ -142,10 +160,10 @@ contract TempToken is ERC20Interface {
         // checks that the second account is a real address
         require(_to != address(0), "bad address");
         // adjusts allowance level of third account
-        allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
+        allowance[_from][msg.sender] -= _value;
+        //allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
         // performs the transfer from first to second account
         _transfer(_from, _to, _value);
         return true;
     }
-
 }

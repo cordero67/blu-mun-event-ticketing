@@ -1,8 +1,7 @@
-//const { assert } = require("chai");
+//import { tokens } from "./helpers";
 
 const { assert } = require("chai");
 
-//import { tokens } from "./helpers";
 const Token = artifacts.require("./Token");
 const Exchange = artifacts.require("./Exchange");
 
@@ -18,7 +17,7 @@ const tokens = (_number) => {
 
 // injects all the accounts from the ganache locally created blockchain
 //contract("token", (accounts) => {
-contract("Exchange", ([deployer, feeAccount, user1]) => {
+contract("Exchange", ([deployer, feeAccount, user1, user2]) => {
   let token;
   let exchange;
   const feePercent = 10;
@@ -42,13 +41,106 @@ contract("Exchange", ([deployer, feeAccount, user1]) => {
 
     it("tracks the fee percent", async () => {
       const result = await exchange.feePercent();
-      console.log("Result: ", result);
-      console.log("feePercent: ", feePercent);
+      //console.log("Result: ", result);
+      //console.log("feePercent: ", feePercent);
       assert.equal(result, feePercent, "the feePercent is not recorded");
     });
   });
 
-  describe("deposits tokens", () => {
+  describe("Fallback function", () => {
+    it("revert if ether is sent", async () => {
+      try {
+        await exchange.sendTransaction({ value: 1, from: user1 });
+        assert(false);
+      } catch (error) {
+        assert.ok(error);
+      }
+    });
+  });
+
+  describe("deposit Ether", () => {
+    let result;
+    let amount;
+
+    beforeEach(async () => {
+      amount = tokens(1);
+      result = await exchange.depositEther({
+        from: user1,
+        value: amount,
+      });
+    });
+
+    it("tracks ether deposits", async () => {
+      const balance = await exchange.tokens(ETHER_ADDRESS, user1);
+      assert.equal(balance, amount.toString(), "did not track ether balance");
+    });
+
+    it("emits a Deposit event", async () => {
+      //console.log(result.logs);
+      const log = result.logs[0];
+      assert.equal(log.event, "Deposit", "generated log");
+      const event = log.args;
+      assert.equal(event.token, ETHER_ADDRESS, "token address is correct");
+      assert.equal(event.amount, amount, "amount is correct");
+      assert.equal(event.balance, amount, "exchange balance is correct");
+    });
+  });
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  describe("withdraw Ether", () => {
+    let result;
+    let amount;
+
+    beforeEach(async () => {
+      amount = tokens(1);
+      result = await exchange.depositEther({
+        from: user1,
+        value: amount,
+      });
+    });
+
+    describe("success", () => {
+      beforeEach(async () => {
+        result = await exchange.withdrawEther(amount, {
+          from: user1,
+        });
+      });
+
+      it("withdraw Ether funds", async () => {
+        const balance = await exchange.tokens(ETHER_ADDRESS, user1);
+        assert.equal(balance, "0", "withdraws ether");
+      });
+
+      it("emits a Withdraw event", async () => {
+        //console.log(result.logs);
+        const log = result.logs[0];
+        assert.equal(log.event, "Withdrawal", "event is correct");
+        const event = log.args;
+        assert.equal(event.token, ETHER_ADDRESS, "token address is correct");
+        assert.equal(event.amount, amount, "amount is correct");
+        assert.equal(event.balance, "0", "exchange balance is correct");
+      });
+    });
+
+    describe("failure", () => {
+      it("rejects withdrawals for insufficient balances", async () => {
+        try {
+          await exchange.withdrawEther(tokens(100), { from: user1 });
+          assert(false);
+        } catch (error) {
+          assert.ok(error);
+        }
+      });
+    });
+  });
+
+  describe("deposit tokens", () => {
     let result;
     let amount;
 
@@ -59,7 +151,7 @@ contract("Exchange", ([deployer, feeAccount, user1]) => {
         await token.approve(exchange.address, amount, { from: user1 });
 
         // deposits tokens from "user1" to "exchange"
-        result = await exchange.depositTokens(token.address, amount, {
+        result = await exchange.depositToken(token.address, amount, {
           from: user1,
         });
       });
@@ -102,7 +194,7 @@ contract("Exchange", ([deployer, feeAccount, user1]) => {
       amount = tokens(10);
       it("rejects ether deposits", async () => {
         try {
-          await exchange.depositTokens(ETHER_ADDRESS, amount, {
+          await exchange.depositToken(ETHER_ADDRESS, amount, {
             from: user1,
           });
           assert(false);
@@ -112,7 +204,7 @@ contract("Exchange", ([deployer, feeAccount, user1]) => {
       });
       it("rejects deposit without appropriate allowance level", async () => {
         try {
-          await exchange.depositTokens(token.address, amount, {
+          await exchange.depositToken(token.address, amount, {
             from: user1,
           });
           assert(false);
@@ -121,5 +213,360 @@ contract("Exchange", ([deployer, feeAccount, user1]) => {
         }
       });
     });
+  });
+
+  describe("withdraw tokens", () => {
+    let result;
+    let amount;
+
+    describe("success", () => {
+      beforeEach(async () => {
+        amount = tokens(10);
+        // this makes the initial token deposit to set up the withdrawal test
+        await token.approve(exchange.address, amount, { from: user1 });
+        await exchange.depositToken(token.address, amount, {
+          from: user1,
+        });
+        // this then makes a withdrawal of these tokens
+        result = await exchange.withdrawToken(token.address, amount, {
+          from: user1,
+        });
+      });
+
+      it("withdraw token funds", async () => {
+        const balance = await exchange.tokens(token.address, user1);
+        assert.equal(balance, "0", "token withdrawal captured");
+      });
+
+      it("emits a Withdraw event", async () => {
+        //console.log(result.logs);
+        const log = result.logs[0];
+        assert.equal(log.event, "Withdrawal", "log records event type");
+        const event = log.args;
+        assert.equal(event.token, token.address, "token address is correct");
+        assert.equal(event.user, user1, "user address is correct");
+        assert.equal(event.amount, amount, "amount is correct");
+        assert.equal(event.balance, "0", "exchange balance is correct");
+      });
+    });
+
+    describe("failure", () => {
+      it("rejects Ether withdrawals", async () => {
+        try {
+          await exchange.withdrawToken(ETHER_ADDRESS, tokens(10), {
+            from: user1,
+          });
+          assert(false);
+        } catch (error) {
+          assert.ok(error.message);
+        }
+      });
+
+      it("rejects withdrawals for insufficient balances", async () => {
+        try {
+          await exchange.withdrawToken(token.address, tokens(10), {
+            from: user1,
+          });
+          assert(false);
+        } catch (error) {
+          assert.ok(error.message);
+        }
+      });
+    });
+  });
+
+  describe("check balances", () => {
+    let result;
+    let amount;
+
+    beforeEach(async () => {
+      amount = tokens(1);
+      result = await exchange.depositEther({
+        from: user1,
+        value: amount,
+      });
+    });
+
+    it("checks balances", async () => {
+      result = await exchange.balanceOf(ETHER_ADDRESS, user1);
+      assert.equal(result, tokens(1), "returns a balance");
+    });
+  });
+
+  describe("making orders", () => {
+    let result;
+    let amount;
+
+    beforeEach(async () => {
+      amount = tokens(1);
+      result = await exchange.makeOrder(
+        token.address,
+        amount,
+        ETHER_ADDRESS,
+        amount,
+        {
+          from: user1,
+        }
+      );
+    });
+
+    it("tracks new order", async () => {
+      const orderCount = await exchange.orderCount();
+      assert.equal(orderCount, "1", "tracks order count");
+      const order = await exchange.orders("1");
+      assert.equal(order.id, "1", "id is correct");
+      assert.equal(order.user, user1, "user is correct");
+      assert.equal(order.tokenGet, token.address, "tokenGet is correct");
+      assert.equal(order.amountGet, tokens(1), "amountGet is correct");
+      assert.equal(order.tokenGive, ETHER_ADDRESS, "tokenGive is correct");
+      assert.equal(order.amountGive, tokens(1), "amountGive is correct");
+      /*
+      assert.greaterThan(
+        order.timestamp.toString(),
+        "1",
+        "timestamp is present"
+      );
+      */
+    });
+
+    it("emits an Order event", async () => {
+      //console.log(result.logs);
+      const log = result.logs[0];
+      assert.equal(log.event, "Order", "records correct event type");
+      const event = log.args;
+
+      assert.equal(event.id, "1", "id address is correct");
+      assert.equal(event.user, user1, "user address is correct");
+      assert.equal(
+        event.tokenGet,
+        token.address,
+        "tokenGet address is correct"
+      );
+      assert.equal(event.amountGet, tokens(1), "amountGet amount is correct");
+      assert.equal(
+        event.tokenGive,
+        ETHER_ADDRESS,
+        "tokenGive address is correct"
+      );
+      assert.equal(
+        event.amountGive,
+        tokens(1).toString(),
+        "tokenGive amount is correct"
+      );
+      /*
+      assert.equal(event.timestamp, 1, "timestamp is present");
+      */
+    });
+  });
+
+  describe("order actions", () => {
+    beforeEach(async () => {
+      // user1 deposits ETHER into exchange
+      await exchange.depositEther({ from: user1, value: tokens(1) });
+      // give user2 some tokens
+      await token.transfer(user2, tokens(100), { from: deployer });
+      // user2 allows exchange to transfer/spend some of its tokens
+      await token.approve(exchange.address, tokens(2), { from: user2 });
+      // user2 deposits tokens into exchange
+      await exchange.depositToken(token.address, tokens(2), { from: user2 });
+      // creates test order
+      await exchange.makeOrder(
+        token.address,
+        tokens(1),
+        ETHER_ADDRESS,
+        tokens(1),
+        { from: user1 }
+      );
+    });
+
+    describe("cancel order", () => {
+      let result;
+
+      describe("success", () => {
+        beforeEach(async () => {
+          result = await exchange.cancelOrder("1", { from: user1 });
+        });
+
+        it("order is in ordersCancelled", async () => {
+          let cancelled = await exchange.ordersCancelled(1);
+          assert.equal(cancelled, true, "order was cancelled");
+        });
+
+        it("emits a Cancel event", async () => {
+          //console.log(result.logs);
+          const log = result.logs[0];
+          assert.equal(log.event, "Cancel", "records the correct event");
+          const event = log.args;
+
+          assert.equal(event.id, "1", "id address is correct");
+          assert.equal(event.user, user1, "user address is correct");
+          assert.equal(
+            event.tokenGet,
+            token.address,
+            "tokenGet address is correct"
+          );
+          assert.equal(
+            event.amountGet,
+            tokens(1),
+            "amountGet amount is correct"
+          );
+          assert.equal(
+            event.tokenGive,
+            ETHER_ADDRESS,
+            "tokenGive address is correct"
+          );
+          assert.equal(
+            event.amountGive,
+            tokens(1),
+            "tokenGive amount is correct"
+          );
+          //assert.equal(event.timestamp, 1, "timestamp is present");
+        });
+      });
+
+      describe("failure", () => {
+        it("rejects an invalid order", async () => {
+          try {
+            await exchange.cancelOrder("999", { from: user1 });
+            assert(false);
+          } catch (error) {
+            assert.ok(error.message);
+          }
+        });
+
+        it("rejects an unauthorized order", async () => {
+          try {
+            await exchange.cancelOrder("1", { from: deployer });
+            assert(false);
+          } catch (error) {
+            assert.ok(error.message);
+          }
+        });
+      });
+    });
+
+    /*
+    describe("fill order", () => {
+      let result;
+
+      describe("success", () => {
+        beforeEach(async () => {
+          // user2 fills the order
+          result = await exchange.fillOrder("1", { from: user2 });
+        });
+        it("executes trade and charges fees", async () => {
+          let balance;
+          balance = await exchange.balanceOf(token.address, user1); //
+          assert.equal();
+          balance
+            .toString()
+            .should.equal(
+              tokens(1).toString(),
+              "user1 Token balance is correct"
+            );
+
+          balance = await exchange.balanceOf(ETHER_ADDRESS, user2); //
+          assert.equal();
+          balance
+            .toString()
+            .should.equal(
+              tokens(1).toString(),
+              "user2 ETHER balance is correct"
+            );
+
+          balance = await exchange.balanceOf(ETHER_ADDRESS, user1); //
+          balance
+            .toString()
+            .should.equal("0", "user1 ETHER balance is correct");
+
+          balance = await exchange.balanceOf(token.address, user2); //
+          assert.equal();
+          balance
+            .toString()
+            .should.equal(
+              tokens(0.9).toString(),
+              "user2 Token balance is correct"
+            );
+          const feeAccount = await exchange.feeAccount();
+          balance = await exchange.balanceOf(token.address, feeAccount);
+          assert.equal();
+          balance
+            .toString()
+            .should.equal(
+              tokens(0.1).toString(),
+              "feeAccount Token balance is correct"
+            );
+        });
+
+        it("updates filled orders", async () => {
+          let orderFilled = await exchange.ordersFilled("1");
+          assert.equal();
+          orderFilled.should.equal(true, "order was filled");
+        });
+
+        it("emits a Trade event", async () => {
+          //console.log(result.logs);
+          const log = result.logs[0];
+          assert.equal();
+          log.event.should.equal("Trade");
+          const event = log.args;
+
+          assert.equal();
+          event.id.toString().should.equal("1", "id address is correct");
+          assert.equal();
+          event.user.toString().should.equal(user1, "user address is correct");
+          assert.equal();
+          event.tokenGet
+            .toString()
+            .should.equal(token.address, "tokenGet address is correct");
+          assert.equal();
+          event.amountGet
+            .toString()
+            .should.equal(tokens(1).toString(), "amountGet amount is correct");
+          assert.equal();
+          event.tokenGive
+            .toString()
+            .should.equal(ETHER_ADDRESS, "tokenGive address is correct");
+          assert.equal();
+          event.amountGive
+            .toString()
+            .should.equal(tokens(1).toString(), "tokenGive amount is correct");
+          assert.equal();
+          event.userFill
+            .toString()
+            .should.equal(user2, "user address is correct");
+          assert.equal();
+          event.timestamp
+            .toString()
+            .length.should.be.at.least(1, "timestamp is present");
+        });
+      });
+
+      describe("failure", () => {
+        it("rejects an invalid order id", async () => {
+          assert.equal();
+          await exchange
+            .fillOrder("999", { from: user2 })
+            .should.be.rejectedWith(EVM_REVERT);
+        });
+
+        it("rejects an already filled order", async () => {
+          assert.equal()
+          await exchange.fillOrder("1", { from: user2 }).should.be.fulfilled;
+          await exchange
+            .fillOrder("1", { from: user2 })
+            .should.be.rejectedWith(EVM_REVERT);
+        });
+
+        it("rejects cancelled order", async () => {
+          assert.equal()
+          await exchange.cancelOrder("1", { from: user1 }).should.be.fulfilled;
+          await exchange
+            .fillOrder("1", { from: user2 })
+            .should.be.rejectedWith(EVM_REVERT);
+        });
+      });
+    });
+    */
   });
 });

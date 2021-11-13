@@ -8,12 +8,12 @@ import "./Token.sol";
 // TODO:
 // [X] Set the fee account
 // [X] Deposit Ether
-// [ ] Withdraw Ether
+// [X] Withdraw Ether
 // [X] Deposit tokens
-// [ ] Withdraw tokens
-// [ ] Check balances
-// [ ] Make order
-// [ ] Cancel order
+// [X] Withdraw tokens
+// [X] Check balances
+// [X] Make order
+// [X] Cancel order
 // [ ] Fill order
 // [ ] Charge fees
 
@@ -23,12 +23,52 @@ contract Exchange {
     address payable public feeAccount;
     uint256 public feePercent;
     address constant ETHER = address(0); // address that represents Ether deposits
+    uint256 public orderCount; // tracks the number of orders placed on exchange
+
 
     // first address is the token address
     // second address is the address of the token holder who made deposit
     mapping(address => mapping(address => uint256)) public tokens;
+    mapping(uint256 => _Order) public orders;
+    mapping(uint256 => bool) public ordersCancelled;
+    
 
     event Deposit(address indexed token, address indexed user, uint256 amount, uint256 balance);
+    event Withdrawal(
+        address token,
+        address user,
+        uint256 amount,
+        uint256 balance
+    );
+    event Order(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
+    event Cancel(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        uint256 timestamp
+    );
+
+    // Structs
+    struct _Order {
+        uint256 id;
+        address user; // order creator
+        address tokenGet; // address of token to be purchased
+        uint256 amountGet; // amount of token to be purchased
+        address tokenGive; // address of token to be provided
+        uint256 amountGive; // amount of token to be provided
+        uint256 timestamp; // time when order was created
+    }
 
     constructor(address payable _feeAccount, uint _feePercent) public {
         feeAccount = _feeAccount;
@@ -41,8 +81,19 @@ contract Exchange {
         emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
     }
 
+    //
+    function withdrawEther(uint256 _amount) public payable {
+        // checks if msg.sender has enough ETHER to sent
+        require(tokens[ETHER][msg.sender] >= _amount);
+        // updates the balances tracked inside the Exchange contract
+        tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].sub(_amount);
+        // transfer() will send ether from the contract to the msg.sender address
+        msg.sender.transfer(_amount);
+        emit Withdrawal(ETHER, msg.sender, _amount, tokens[ETHER][msg.sender]);
+    }
+
     // receives address of a pecific token and amount of tokens to be deposited
-    function depositTokens(address _token, uint _amount) public {
+    function depositToken(address _token, uint _amount) public {
         // "Token(_token)" creates an instance of token contract deployed at "_token" address
         // this allows any function in "Token.sol" contract to be called
         // calls "transferFrom(address _from, address _to, uint256 _value) public returns (bool success)" function
@@ -54,6 +105,76 @@ contract Exchange {
         require(_token != ETHER);
         tokens[_token][msg.sender] = tokens[_token][msg.sender].add(_amount);
         emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender] );
+    }
+
+    function withdrawToken(address _token, uint256 _amount) public {
+        // checks if msg.sender has enough tokens to withdraw
+        require(tokens[_token][msg.sender] >= _amount);
+        // do not allow token address to be valid
+        require(_token != ETHER);
+        // generates an instance of the Token contract on the Ethereum network
+        // then runs the transfer() function
+        // this will send tokens from the Exchange contract to msg.sender
+        require(Token(_token).transfer(msg.sender, _amount));
+        // updates the balances tracked inside the Exchange contract
+        tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
+        emit Withdrawal(
+            _token,
+            msg.sender,
+            _amount,
+            tokens[_token][msg.sender]
+        );
+    }
+
+    function balanceOf(address _token, address _user) public view returns(uint256) {
+        return tokens[_token][_user];
+    }
+
+    function makeOrder(
+        address _tokenGet,
+        uint256 _amountGet,
+        address _tokenGive,
+        uint256 _amountGive
+    ) public {
+        orderCount = orderCount.add(1);
+        orders[orderCount] = _Order(
+            orderCount,
+            msg.sender,
+            _tokenGet,
+            _amountGet,
+            _tokenGive,
+            _amountGive,
+            now
+        );
+        emit Order(
+            orderCount,
+            msg.sender,
+            _tokenGet,
+            _amountGet,
+            _tokenGive,
+            _amountGive,
+            now
+        );
+    }
+
+    function cancelOrder(uint256 _id) public {
+        // extracts the specific order from the orders mapping that is in storage
+        _Order storage _order = orders[_id];
+        // checks that order creator matches the address that is trying to cancel order
+        require(msg.sender == address(_order.user));
+        // requires that id of order extracted matches id of order being cancelled
+        require(_id == _order.id);
+        // adds the order to the ordersCancelled mapping
+        ordersCancelled[_id] = true;
+        emit Cancel(
+            _order.id,
+            _order.user,
+            _order.tokenGet,
+            _order.amountGet,
+            _order.tokenGive,
+            _order.amountGive,
+            now
+        );
     }
 
 }
