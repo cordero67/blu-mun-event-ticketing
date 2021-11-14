@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
+
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 // imports the Token contract not a specific token
@@ -14,23 +15,24 @@ import "./Token.sol";
 // [X] Check balances
 // [X] Make order
 // [X] Cancel order
-// [ ] Fill order
-// [ ] Charge fees
+// [X] Fill order
+// [X] Charge fees
 
 contract Exchange {
     using SafeMath for uint256;
 
+    // State Variables
     address payable public feeAccount;
     uint256 public feePercent;
     address constant ETHER = address(0); // address that represents Ether deposits
     uint256 public orderCount; // tracks the number of orders placed on exchange
-
 
     // first address is the token address
     // second address is the address of the token holder who made deposit
     mapping(address => mapping(address => uint256)) public tokens;
     mapping(uint256 => _Order) public orders;
     mapping(uint256 => bool) public ordersCancelled;
+    mapping(uint256 => bool) public ordersFilled;
     
 
     event Deposit(address indexed token, address indexed user, uint256 amount, uint256 balance);
@@ -58,6 +60,16 @@ contract Exchange {
         uint256 amountGive,
         uint256 timestamp
     );
+    event Trade(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive,
+        uint256 amountGive,
+        address userFill,
+        uint256 timestamp
+    );
 
     // Structs
     struct _Order {
@@ -75,8 +87,14 @@ contract Exchange {
         feePercent = _feePercent;
     }
 
+    // fallback function reverts if ether sent directly to Exchange contract
+    function() external payable {
+        revert();
+    }
+
     // receives ether sent to this contract
     function depositEther() public payable {
+        // updates the balances tracked inside the Exchange contract
         tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].add(msg.value);
         emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
     }
@@ -116,6 +134,7 @@ contract Exchange {
         // then runs the transfer() function
         // this will send tokens from the Exchange contract to msg.sender
         require(Token(_token).transfer(msg.sender, _amount));
+        //require(_token != ETHER);
         // updates the balances tracked inside the Exchange contract
         tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
         emit Withdrawal(
@@ -126,7 +145,12 @@ contract Exchange {
         );
     }
 
-    function balanceOf(address _token, address _user) public view returns(uint256) {
+    function balanceOf(address _token, address _user)
+        public
+        view
+        returns(uint256)
+    {
+        // checks a specific balance inside the tokens mapping
         return tokens[_token][_user];
     }
 
@@ -177,5 +201,75 @@ contract Exchange {
         );
     }
 
-}
+    function fillOrder(uint256 _id) public {
+        // checks that the order id is valid
+        require(_id > 0 && _id <= orderCount);
+        // checks that order has not been cancelled
+        require(!ordersCancelled[_id]);
+        // checks that order has not been filled
+        require(!ordersFilled[_id]);
+        // extracts the specific order from the orders mapping that is in storage
+        _Order storage _order = orders[_id];
+        _trade(
+            _order.id,
+            _order.user,
+            _order.tokenGet,
+            _order.amountGet,
+            _order.tokenGive,
+            _order.amountGive
+        );
+        // marks order as filled
+        ordersFilled[_order.id] = true;
+    }
 
+    // helper function
+    function _trade(
+        uint256 _orderId,
+        address _user,
+        address _tokenGet,
+        uint256 _amountGet,
+        address _tokenGive,
+        uint256 _amountGive
+    ) internal {
+        // based on perception of filler
+        // _tokenGive is the token type they receive
+        // _amountGive is the amount of the token they recieve
+        // _tokenGet is the token type they give
+        // _amountGet is the amount of the token they give
+
+        // fee is calculated based on the amount received by the filler
+        uint256 _feeAmount = _amountGive.mul(feePercent).div(100);
+
+        // fee is subtracted from the amount received by the address that fills the order
+
+        // amount of tokens that filler gives to user plus the fee amount
+        tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(
+            _amountGet.add(_feeAmount)
+        );
+        // amount of tokens that user receives from filler
+        tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+
+        // amount of tokens that fee account receives from filler
+        tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(
+            _feeAmount
+        );
+
+        // amount of tokens that user gives to filler
+        tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_amountGive);
+
+        // amount of tokens that filler receives from the user
+        tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender].add(
+            _amountGive
+        );
+        emit Trade(
+            _orderId,
+            _user,
+            _tokenGet,
+            _amountGet,
+            _tokenGive,
+            _amountGive,
+            msg.sender,
+            now
+        );
+    }
+}
