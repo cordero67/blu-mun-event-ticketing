@@ -1,5 +1,6 @@
 .content {
-  background-color: #1d1d1d;
+  /*background-color: #1d1d1d;*/
+  background-color: #f5b112;
   position: absolute;
   top: 56px;
   left: 0;
@@ -119,7 +120,7 @@
 .card-body .nav-item.nav-link {
   font-size: 80%;
   font-weight: bold;
-  background-color: inherit;
+  background-color: #f5b112;
   color: inherit;
   padding: 4px 8px;
   border-top: 0px;

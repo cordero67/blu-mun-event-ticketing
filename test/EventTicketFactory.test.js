@@ -1,54 +1,95 @@
+import { assert } from "chai";
+
 const GAEventTickets = artifacts.require("./GAEventTickets");
+const Factory = artifacts.require("./EventTicketingFactory");
 
 // injects all the accounts from ganache blockchain created locally
 //contract("ticket", (accounts) => {
-contract("GAEventTickets", ([deployer, receiver, exchange]) => {
+contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
+  let factory;
   let ticket;
+  let deployedTickets;
   const name = "Blu Mun GA Tickets";
   const symbol = "BLMN";
-  const decimals = "0";
   const totalSupply = 1000000;
+  const decimals = "0";
+  const primaryPrice = 100;
 
   beforeEach(async () => {
-    //ticket = await GAEventTickets.new();
-    ticket = await GAEventTickets.new(1000000, deployer);
+    factory = await Factory.new();
+    await factory.createGATickets(name, symbol, totalSupply, primaryPrice, {
+      from: deployer,
+    });
+    [deployedTickets] = await factory.getDeployedGAEventTickets();
+    //let deployedTickets = await factory.getDeployedGAEventTickets();
+
+    ticket = await GAEventTickets.at(deployedTickets);
+    //ticket = await GAEventTickets.at(deployedTickets[0]);
+    //ticket = await GAEventTickets.new(1000000, deployer);
   });
 
   describe("deployment", () => {
-    it("tracks the name", async () => {
-      const result = await ticket.name();
-      assert.equal(result, name, "the name is not registered");
-      //result.should.equal(name);
+    it("deploys a ticket factory", async () => {
+      assert.ok(factory.address, "deploys a ticket factory contract");
     });
 
-    it("tracks the symbol", async () => {
+    it("deploys a GA ticket event", async () => {
+      assert.ok(ticket.address, "deploys an event ticket contract");
+    });
+
+    it("tracks the ticket factory manager", async () => {
+      const manager = await factory.manager();
+      console.log("manager: ", manager);
+      assert.equal(manager, deployer, "the name is registered");
+    });
+
+    it("tracks the event ticket creator", async () => {
+      const creator = await ticket.creator();
+      console.log("creator: ", creator);
+      assert.equal(creator, deployer, "the name is registered");
+    });
+
+    it("tracks the event ticket name", async () => {
+      const result = await ticket.name();
+      assert.equal(result, name, "the event ticket name is registered");
+    });
+
+    it("tracks the event ticket symbol", async () => {
       const result = await ticket.symbol();
       console.log("Symbol: ", symbol);
-      assert.equal(result, symbol, "the symbol is not registered");
+      assert.equal(result, symbol, "the event ticket symbol is registered");
     });
 
-    it("tracks the decimals", async () => {
+    it("tracks the event ticket decimals", async () => {
       const result = await ticket.decimals();
       assert.equal(
         result.toString(),
         decimals,
-        "the decimals is not registered"
+        "the event ticket decimals is registered"
       );
     });
 
-    it("tracks the total supply", async () => {
+    it("tracks the event ticket total supply", async () => {
       const result = await ticket.totalSupply();
       //console.log("result.toString(): ", result.toString());
       //console.log("totalSupply: ", totalSupply);
-      assert.equal(result, totalSupply, "the totalSupply is not registered");
+      assert.equal(
+        result,
+        totalSupply,
+        "the event ticket totalSupply is registered"
+      );
     });
 
-    it("assigns the total ticket supply to the deployer", async () => {
+    it("assigns the event ticket total  supply to the deployer", async () => {
       //const result = await ticket.balanceOf(accounts[0]);
       const result = await ticket.balanceOf(deployer);
       //console.log("result: ", result);
       //console.log("totalSupply: ", totalSupply);
-      assert.equal(result, totalSupply, "totalSupply not sent to owner");
+      assert.equal(
+        result,
+        totalSupply,
+        "the event ticket totalSupply sent to creator"
+      );
     });
   });
 
@@ -72,10 +113,10 @@ contract("GAEventTickets", ([deployer, receiver, exchange]) => {
 
         balance = await ticket.balanceOf(deployer);
         //console.log("deployer balance after: ", balance.toString());
-        assert.equal(balance, 999900, "balance does not equal 999900");
+        assert.equal(balance, 999900, "balance does equal 999900");
         balance = await ticket.balanceOf(receiver);
         //console.log("recipient balance after: ", balance.toString());
-        assert.equal(balance, 100, "balance does not equal 100");
+        assert.equal(balance, 100, "balance does equal 100");
       });
 
       it("emits a Transfer event", async () => {
@@ -131,12 +172,10 @@ contract("GAEventTickets", ([deployer, receiver, exchange]) => {
         } catch (error) {
           assert(error);
         }
-        //console.log("Continuing");
 
         invalidAmount = 1000000000000000;
         try {
           await ticket.transfer(receiver, invalidAmount, { from: deployer });
-          //console.log("Amount is GOOD");
         } catch (error) {
           assert.equal(
             error.message,
@@ -181,7 +220,6 @@ contract("GAEventTickets", ([deployer, receiver, exchange]) => {
         const allowance = await ticket.allowance(deployer, exchange, {
           from: deployer,
         });
-        //console.log("Hello");
         assert.equal(
           allowance,
           amount,

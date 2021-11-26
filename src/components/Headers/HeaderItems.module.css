@@ -1,0 +1,52 @@
+.HeaderItems {
+  font-family: "Roboto", sans-serif;
+  list-style: none;
+  padding-left: 0px;
+  width: 100%;
+  text-align: right;
+}
+.HeaderItems li {
+  padding-right: 10px;
+  display: inline-block;
+  text-align: center;
+}
+.HeaderItems a {
+  color: "#000";
+  text-decoration: none;
+  font-weight: 500;
+  text-align: center;
+}
+.HeaderItems a:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.HeaderItems a:active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.HeaderItems a.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+.HeaderFunction a {
+  color: "#000";
+  text-decoration: none;
+  font-weight: 500;
+  text-align: center;
+}
+.HeaderFunction a:hover {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+@media (min-width: 550px) {
+  .HeaderItems li {
+    padding-right: 15px;
+  }
+}
+
+@media (min-width: 990px) {
+  .HeaderItems li {
+    padding-right: 20px;
+  }
+}

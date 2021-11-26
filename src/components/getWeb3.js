@@ -4,6 +4,7 @@ const getWeb3 = () =>
   new Promise((resolve, reject) => {
     // Wait for loading completion to avoid race conditions with web3 injection timing.
     window.addEventListener("load", async () => {
+      console.log("inside addEventListener");
       // Modern dapp browsers...
       if (window.ethereum) {
         const web3 = new Web3(window.ethereum);
@@ -13,7 +14,7 @@ const getWeb3 = () =>
           // Accounts now exposed
           // "Promise.resolve()"" method returns the "web3" Promise object
           resolve(web3);
-          //console.log("Loaded window.ethereum");
+          console.log("Loaded window.ethereum");
         } catch (error) {
           reject(error);
         }

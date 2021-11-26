@@ -51,13 +51,34 @@ contract ERC20Interface {
     );
 }
 
-
 contract EventTicketingFactory {
+    address public manager;
     address[] public deployedGAEvents;
+    mapping(address => Details) public details;
+
+    struct Details {
+        string name;
+        string symbol;
+        uint256 totalSupply;
+        uint256 primaryPrice;
+        address creator;
+    }
+
+    constructor() public {
+        manager = msg.sender;
+    }
     
-    function createGATickets(uint _tickets) public {
-        address newGAEvent = address(new GAEventTickets(_tickets, msg.sender));
+    function createGATickets(string memory _name, string memory _symbol, uint256 _tickets, uint256 _primaryPrice) public returns(address) {
+        address newGAEvent = address(new GAEventTickets(_name, _symbol, _tickets, _primaryPrice, msg.sender));
         deployedGAEvents.push(newGAEvent);
+        details[newGAEvent] = Details({
+            name: _name,
+            symbol: _symbol,
+            totalSupply: _tickets,
+            primaryPrice: _primaryPrice,
+            creator: msg.sender
+        });
+        return newGAEvent;
     }
     
     function getDeployedGAEventTickets() public view returns(address[] memory) {
@@ -73,11 +94,13 @@ contract EventTicketingFactory {
 contract GAEventTickets is ERC20Interface {
     //using SafeMath for uint256;
 
-    string public name = "Blu Mun GA Tickets";
-    string public symbol = "BLMN";
-    uint256 public decimals = 0;
+    string public name;
+    string public symbol;
+    uint256 public decimals = 0; // since these are not tokens make decimals "0"
     uint256 public totalSupply;
-    address public owner; // NOT part of ERC20Interface/Standard
+    uint256 public primaryPrice; // NOT part of ERC20Interface/Standard
+    address public creator; // NOT part of ERC20Interface/Standard
+    uint public refunded;
 
     // keeps track of each address' ticket balance
     mapping(address => uint256) public balanceOf;
@@ -88,7 +111,6 @@ contract GAEventTickets is ERC20Interface {
     // transfer is performed by "transferFrom()" where receiver can be second address or a third party address
     mapping(address => mapping(address => uint256)) public allowance;
 
-
     enum State {Running, Stopped, Inactive}
 
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -98,10 +120,13 @@ contract GAEventTickets is ERC20Interface {
         uint256 value
     );
 
-    constructor(uint _tickets, address _owner) public {
+    constructor(string memory _name, string memory _symbol, uint256 _tickets, uint256 _primaryPrice, address _creator) public {
+        name = _name;
+        symbol = _symbol;
         totalSupply = _tickets * (10**decimals);
-        owner = _owner; // identify contract deployer as owner
-        balanceOf[owner] = totalSupply; // give all initial token supply to owner
+        primaryPrice = _primaryPrice;
+        creator = _creator; // identify contract deployer as creator
+        balanceOf[creator] = totalSupply; // give all initial token supply to creator
     }
 
     // helper function that performs token exchange between accounts
@@ -143,6 +168,10 @@ contract GAEventTickets is ERC20Interface {
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
+    
+    function contractBalance() public view returns (uint) {
+        return address(this).balance;
+    }
 
     // transfers tokens from one account "_from" to second account "_to" by a third account ("msg.sender")
     // second and third accounts can be the same address
@@ -165,5 +194,25 @@ contract GAEventTickets is ERC20Interface {
         // performs the transfer from first to second account
         _transfer(_from, _to, _value);
         return true;
+    }
+    
+    function primaryTransfer(uint _qty) public payable returns (uint amountToRefund) {
+        // checks that amount sent can pay for amount of tickets to be purchased
+        require(msg.value >= _qty * primaryPrice);
+        // checks that creator has enough tickets to satisfy amount of tickets to be purchased
+        require(balanceOf[creator] >= _qty);
+        
+        balanceOf[creator] -= _qty;
+        //balanceOf[creator] = balanceOf[creator].sub(_qty);
+        balanceOf[msg.sender] += _qty;
+        //balanceOf[_to] = balanceOf[_to].add(_value);
+        emit Transfer(creator, msg.sender, _qty);
+
+        // returns excess value sent;
+        amountToRefund = msg.value - (primaryPrice * _qty);
+        msg.sender.transfer(amountToRefund);
+        refunded = amountToRefund;
+        
+        return amountToRefund;
     }
 }
