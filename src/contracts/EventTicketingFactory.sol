@@ -233,8 +233,8 @@ contract GAEventTickets is ERC20Interface {
 
         // returns excess value sent;
         amountToRefund = msg.value - (primaryPrice * _qty);
-        msg.sender.transfer(amountToRefund);
         refunded = amountToRefund;
+        msg.sender.transfer(amountToRefund);
         
         return amountToRefund;
     }
