@@ -4,20 +4,20 @@ import getWeb3 from "./getWeb3";
 import Factory from "../abis/EventTicketingFactory.json";
 import GAEventTicket from "../abis/GAEventTickets.json";
 
-//import Header from "./Headers/Header";
+import Spinner from "./Spinner/Spinner";
 
 import Logo from "../blu_mun.jpeg";
 //import Logo from "../blu_mun_alt.jpg";
 
-import "./App.css";
-
-import classes from "./EventTombstone.module.css";
-import { truncate } from "lodash";
+import classes from "./App.module.css";
 
 class App extends Component {
   state = {
     isLoading: true,
-    display: "all", // events, create, myEvents, myTickets, exchange3
+    display: "myTickets", // events, create, myEvents, myTickets, exchange3
+    modal: "none", // none, buy, create, modify, transfer
+    modalSpinner: false,
+    transactionSuccess: "none", // none, success, failure
     web3: null,
     accounts: null,
     networkId: null,
@@ -47,6 +47,9 @@ class App extends Component {
       //},
     ],
     newEvent: { name: "", symbol: "", initial: "", price: "" },
+    newOrder: {},
+    transferOrder: {},
+    selectedEvent: [],
     myEvents: [],
     myTickets: [],
   };
@@ -162,6 +165,8 @@ class App extends Component {
             name: name,
             symbol: symbol,
             address: address,
+            creator: creator,
+            price: primaryPrice,
             amount: purchased,
           };
 
@@ -180,6 +185,54 @@ class App extends Component {
     }
   };
 
+  eventButtons = (contains, item, index) => {
+    const { web3 } = this.state;
+    if(contains) {
+      return (
+        <div style={{paddingTop: "20px", paddingBottom: "10px"}}>
+          <button
+            className={classes.ButtonBlueSmall}
+            onClick={() => {
+              this.setState({display: "myEvents"})
+            }}
+          >MANAGE YOUR EVENT</button>
+        </div>
+      )
+    } else if (item.available === "0") {
+      return (
+        <div style={{paddingTop: "20px", paddingBottom: "5px", fontSize: "30px", fontWeight: "600", color: "red"}}>
+          SOLD OUT
+        </div>
+      )
+    } else {
+      return (
+        <div style={{paddingTop: "20px", paddingBottom: "10px"}}>
+          <button
+            className={classes.ButtonGreenSmall}
+            onClick={async () => {
+              const { web3 } = this.state;
+              
+              const gaEvent = new web3.eth.Contract(
+                GAEventTicket.abi,
+                item.address)
+
+              let available = await gaEvent.methods
+                .balanceOf(item.creator)
+                .call();
+
+              item.index = index;
+              item.available = available;
+              item.quantity = 0;
+              this.setState({modal: "buy", newOrder: item})
+            }}
+          >
+            BUY TICKETS
+          </button>
+        </div>          
+      )
+    }
+  }
+
   eventList = () => {
     const { isLoading, web3, accounts, gaTicketDetails } = this.state;
 
@@ -193,87 +246,37 @@ class App extends Component {
             if (this.state.myEvents.includes(item.address)) {
               contains = true;
             }
-            //console.log("item: ", item);
             return (
               <article className={classes.Event}>
                 <div
                   className={classes.EventTitle}
                   style={{ fontSize: "24px" }}
                 >
-                  {`${item.name} (symbol: ${item.symbol})`}
+                  {item.name}
                 </div>
-                <div>Ticket Symbol: {item.symbol}</div>
-                <div>Initial Ticket Amount: {item.ticketSupply}</div>
-                <div>Current Availability: {item.available}</div>
-                <div>Ticket Price: {item.primaryPrice} wei</div>
-                <div>Ticket Address: {item.address}</div>
-                <div>Event Creator: {item.creator}</div>
-                {contains ? (
-                  <div>
-                    {" "}
-                    <button>Manage your event</button>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "50% 48%",
+                    columnGap: "2%"
+                  }}>
+                  <div style={{textAlign: "right"}}>
+                    <div>Ticket Symbol:</div>
+                    <div>Tickets Available:</div>
+                    <div>Ticket Price:</div>
                   </div>
-                ) : (
-                  <div>
-                    <input
-                      style={{ width: "300px" }}
-                      name="name"
-                      placeholder="limit 64 alphanumeric characters"
-                      value={this.state.gaTicketDetails[index].newOrder.number}
-                      onChange={(event) => {
-                        let tempState = [...this.state.gaTicketDetails];
-                        tempState[index].newOrder.number = event.target.value;
-                        tempState[index].newOrder.amount =
-                          event.target.value *
-                          this.state.gaTicketDetails[index].primaryPrice;
-                        console.log("tempState[index]: ", tempState[index]);
-                        console.log(
-                          "tempState[index].newOrder: ",
-                          tempState[index].newOrder
-                        );
-                        console.log("tempState: ", tempState);
-
-                        this.setState({ gaTicketDetails: tempState });
-                      }}
-                    ></input>
-
-                    <button
-                      onClick={async () => {
-                        const gaEvent = new web3.eth.Contract(
-                          GAEventTicket.abi,
-                          item.address
-                        );
-
-                        let ticketSupply = await gaEvent.methods
-                          .totalSupply()
-                          .call();
-
-                        let available = await gaEvent.methods
-                          .balanceOf(item.creator)
-                          .call();
-
-                        let value = gaTicketDetails[index].newOrder.amount;
-                        let quantity = gaTicketDetails[index].newOrder.number;
-
-                        const result1 = await gaEvent.methods
-                          .primaryTransfer(quantity)
-                          .send({ from: accounts[0], value: value + 9 });
-
-                        const result2 = await gaEvent.methods
-                          .balanceOf(gaTicketDetails[index].creator)
-                          .call();
-
-                        let tempState = [...this.state.gaTicketDetails];
-
-                        tempState[index].available = result2;
-
-                        this.setState({ gaTicketDetails: tempState });
-                      }}
-                    >
-                      Buy tickets
-                    </button>
+                  <div style={{textAlign: "left"}}>
+                    <div>{item.symbol}</div>
+                    <div>{item.available}</div>
+                    <div>{item.primaryPrice} wei</div>
                   </div>
-                )}
+                </div>
+                
+                {this.eventButtons(contains, item, index)}
+                <div style={{paddingTop: "10px", fontWeight: "600"}}>Ticket Address</div>
+                <div>{item.address}</div>
+                <div style={{paddingTop: "10px", fontWeight: "600"}}>Event Creator</div>
+                <div>{item.creator}</div>
               </article>
             );
           })}
@@ -322,9 +325,8 @@ class App extends Component {
                   </div>
                   <div>Ticket Symbol: {item.symbol}</div>
                   <div>Initial Ticket Amount: {item.ticketSupply}</div>
-                  <div>Current Availability: {item.available}</div>
+                  <div>Tickets Availability: {item.available}</div>
                   <div>Ticket Price: {item.primaryPrice} wei</div>
-                  <div>Ticket Address: {item.address}</div>
                   <div>Event Creator: {item.creator}</div>
                 </article>
               );
@@ -345,21 +347,38 @@ class App extends Component {
       return (
         <Fragment>
           {myTickets.map((item, index) => {
+            console.log("item: ", item)
             return (
-              <article className={classes.Event}>
+              <div style={{paddingBottom: "30px"}}>
                 <div
-                  className={classes.EventTitle}
-                  style={{ fontSize: "24px" }}
+                  style={{ fontSize: "24px", fontWeight: "600", paddingBottom: "10px" }}
                 >
-                  {`${item.name} (symbol: ${item.symbol})`}
+                  {item.name} ({item.symbol})
                 </div>
                 <div
-                  className={classes.EventTitle}
-                  style={{ fontSize: "24px" }}
+                  style={{display: "grid", 
+                    gridTemplateColumns: "180px 300px",
+                    columnGap: "5px",
+                    fontSize: "20px"
+                  }}
                 >
-                  {`address: ${item.address}, amount: ${item.amount})`}
+                  <div style={{textAlign: "right"}}>Ticket address:</div>
+                  <div style={{textAlign: "left"}}>{item.address}</div>
+                  <div style={{textAlign: "right"}}>Event creator:</div>
+                  <div style={{textAlign: "left"}}>{item.creator}</div>
+                  <div style={{textAlign: "right"}}>Tickets owned:</div>
+                  <div style={{textAlign: "left"}}>{item.amount}</div>
                 </div>
-              </article>
+                <div style={{paddingLeft: "160px", paddingTop: "20px", paddingBottom: "30px"}}>
+                  <button
+                    className={classes.ButtonBlueSmall}
+                    onClick={() => {
+                      this.setState({modal: "transfer", transferOrder: item})
+                    }}
+                  >TRANSFER TICKETS</button>
+                </div>
+                <hr style={{width: "100%", backgroundColor: "#666"}}/>
+              </div>
             );
           })}
         </Fragment>
@@ -553,52 +572,21 @@ class App extends Component {
 
   createGATickets = () => {
     return (
-      <div
-        style={{
-          paddingTop: "30px",
-          paddingBottom: "20px",
-          paddingLeft: "40px",
-        }}
-      >
-        <div
-          style={{
-            paddingBottom: "10px",
-            fontSize: "26px",
-            fontWeight: "600",
-          }}
-        >
+      <div className={classes.TicketCreationPane}>
+        <div className={classes.TicketCreationTitle}>
           General Admission Tickets
         </div>
         <div>
-          <div
-            style={{
-              padding: "10px 10px 0px 0px",
-              height: "30px",
-              fontSize: "15px",
-              fontWeight: "600",
-              backgroundColor: "#fff",
-              boxSizing: "border-box",
-            }}
-          >
+          <div className={classes.InputBoxLabel}>
             Event Title<span style={{ color: "red" }}>*</span>
           </div>
-          <div
-            style={{
-              height: "auto",
-              fontSize: "16px",
-              padding: "5px 10px 10px 0px",
-              boxSizing: "border-box",
-              borderColor: "red",
-              backgroundColor: "#fff",
-            }}
-          >
+          <div className={classes.InputBox}>
             <input
               className={
                 this.state.gaTicketWarnings.name
                   ? classes.InputBoxContentError
                   : classes.InputBoxContent
               }
-              style={{ width: "600px" }}
               onFocus={() => {
                 let tempWarnings = { ...this.state.gaTicketWarnings };
                 tempWarnings.nameRemaining = true;
@@ -609,7 +597,6 @@ class App extends Component {
                 tempWarnings.nameRemaining = false;
                 this.setState({ gaTicketWarnings: tempWarnings });
               }}
-              style={{ width: "500px" }}
               type="text"
               maxLength="64"
               placeholder="limit 64 alphanumeric characters"
@@ -627,35 +614,16 @@ class App extends Component {
           </div>
         </div>
         <div>
-          <div
-            style={{
-              padding: "10px 10px 0px 0px",
-              height: "30px",
-              fontSize: "15px",
-              fontWeight: "600",
-              backgroundColor: "#fff",
-              boxSizing: "border-box",
-            }}
-          >
+          <div className={classes.InputBoxLabel}>
             Ticket Symbol<span style={{ color: "red" }}>*</span>
           </div>
-          <div
-            style={{
-              height: "auto",
-              fontSize: "16px",
-              padding: "5px 10px 10px 0px",
-              boxSizing: "border-box",
-              borderColor: "red",
-              backgroundColor: "#fff",
-            }}
-          >
+          <div className={classes.InputBox}>
             <input
               className={
                 this.state.gaTicketWarnings.symbol
                   ? classes.InputBoxContentError
                   : classes.InputBoxContent
               }
-              style={{ width: "600px" }}
               onFocus={() => {
                 let tempWarnings = { ...this.state.gaTicketWarnings };
                 tempWarnings.symbolRemaining = true;
@@ -666,7 +634,6 @@ class App extends Component {
                 tempWarnings.symbolRemaining = false;
                 this.setState({ gaTicketWarnings: tempWarnings });
               }}
-              style={{ width: "500px" }}
               type="text"
               maxLength="6"
               placeholder="3 to 6 alphanumeric characters"
@@ -677,47 +644,25 @@ class App extends Component {
                 this.updateGaWarnings(event);
               }}
             ></input>
-
-            <div>
-              {this.state.gaTicketWarnings.symbol &&
+            {this.state.gaTicketWarnings.symbol &&
               this.state.gaTicketWarnings.symbol !== "true"
-                ? this.warningMessage(this.state.gaTicketWarnings.symbol)
-                : this.state.gaTicketWarnings.symbolRemaining
-                ? this.remainingMessage(6, 3, this.state.newEvent.symbol)
-                : null}
-            </div>
+              ? this.warningMessage(this.state.gaTicketWarnings.symbol)
+              : this.state.gaTicketWarnings.symbolRemaining
+              ? this.remainingMessage(6, 3, this.state.newEvent.symbol)
+              : null}
           </div>
         </div>
         <div>
-          <div
-            style={{
-              padding: "10px 10px 0px 0px",
-              height: "30px",
-              fontSize: "15px",
-              fontWeight: "600",
-              backgroundColor: "#fff",
-              boxSizing: "border-box",
-            }}
-          >
+          <div className={classes.InputBoxLabel}>
             # of Tickets<span style={{ color: "red" }}>*</span>
           </div>
-          <div
-            style={{
-              height: "auto",
-              fontSize: "16px",
-              padding: "5px 10px 10px 0px",
-              boxSizing: "border-box",
-              borderColor: "red",
-              backgroundColor: "#fff",
-            }}
-          >
+          <div className={classes.InputBox}>
             <input
               className={
                 this.state.gaTicketWarnings.initial
                   ? classes.InputBoxContentError
                   : classes.InputBoxContent
               }
-              style={{ width: "600px" }}
               onFocus={() => {
                 let tempWarnings = { ...this.state.gaTicketWarnings };
                 tempWarnings.initialRemaining = true;
@@ -728,7 +673,6 @@ class App extends Component {
                 tempWarnings.initialRemaining = false;
                 this.setState({ gaTicketWarnings: tempWarnings });
               }}
-              style={{ width: "500px" }}
               type="text"
               maxLength="6"
               placeholder="max 100,000 tickets"
@@ -739,46 +683,25 @@ class App extends Component {
                 this.updateGaWarnings(event);
               }}
             ></input>
-            <div>
-              {this.state.gaTicketWarnings.initial &&
+            {this.state.gaTicketWarnings.initial &&
               this.state.gaTicketWarnings.initial !== "true"
-                ? this.warningMessage(this.state.gaTicketWarnings.initial)
-                : this.state.gaTicketWarnings.initialRemaining
-                ? this.remainingMessage(6, 3, this.state.newEvent.initial)
-                : null}
-            </div>
+              ? this.warningMessage(this.state.gaTicketWarnings.initial)
+              : this.state.gaTicketWarnings.initialRemaining
+              ? this.remainingMessage(6, 3, this.state.newEvent.initial)
+              : null}
           </div>
         </div>
         <div>
-          <div
-            style={{
-              padding: "10px 10px 0px 0px",
-              height: "30px",
-              fontSize: "15px",
-              fontWeight: "600",
-              backgroundColor: "#fff",
-              boxSizing: "border-box",
-            }}
-          >
+          <div className={classes.InputBoxLabel}>
             Ticket Price (in Wei)<span style={{ color: "red" }}>*</span>
           </div>
-          <div
-            style={{
-              height: "auto",
-              fontSize: "16px",
-              padding: "5px 10px 10px 0px",
-              boxSizing: "border-box",
-              borderColor: "red",
-              backgroundColor: "#fff",
-            }}
-          >
+          <div className={classes.InputBox}>
             <input
               className={
                 this.state.gaTicketWarnings.price
                   ? classes.InputBoxContentError
                   : classes.InputBoxContent
               }
-              style={{ width: "600px" }}
               onFocus={() => {
                 let tempWarnings = { ...this.state.gaTicketWarnings };
                 tempWarnings.priceRemaining = true;
@@ -789,7 +712,6 @@ class App extends Component {
                 tempWarnings.priceRemaining = false;
                 this.setState({ gaTicketWarnings: tempWarnings });
               }}
-              style={{ width: "500px" }}
               type="text"
               maxLength="19"
               placeholder="max 1,000,000,000,000,000,000 wei"
@@ -801,19 +723,16 @@ class App extends Component {
               }}
             ></input>
             <div>
-              <div>
-                {this.state.gaTicketWarnings.price &&
+              {this.state.gaTicketWarnings.price &&
                 this.state.gaTicketWarnings.price !== "true"
-                  ? this.warningMessage(this.state.gaTicketWarnings.price)
-                  : this.state.gaTicketWarnings.priceRemaining
-                  ? this.remainingMessage(19, 6, this.state.newEvent.price)
-                  : null}
-              </div>
+                ? this.warningMessage(this.state.gaTicketWarnings.price)
+                : this.state.gaTicketWarnings.priceRemaining
+                ? this.remainingMessage(19, 6, this.state.newEvent.price)
+                : null}
             </div>
           </div>
         </div>
-
-        <div style={{ paddingTop: "20px", paddingLeft: "100px" }}>
+        <div style={{ paddingTop: "20px"}}>
           <button
             className={
               this.disableButton()
@@ -823,7 +742,7 @@ class App extends Component {
             disabled={this.disableButton()}
             onClick={this.onClick}
           >
-            Create General Admission Tickets
+            CREATE GENERAL ADMISSION TICKETS
           </button>
         </div>
       </div>
@@ -832,23 +751,26 @@ class App extends Component {
 
   createASTickets = () => {
     return (
-      <div
-        style={{
-          paddingTop: "30px",
-          paddingBottom: "20px",
-          paddingLeft: "40px",
-        }}
-      >
-        <div
-          style={{
-            paddingBottom: "10px",
-            fontSize: "26px",
-            fontWeight: "600",
-          }}
-        >
+      <div className={classes.TicketCreationPane}>
+        <div className={classes.TicketCreationTitle}>
           Assigned Seating Tickets
           <div
-            style={{ paddingTop: "20px", paddingLeft: "150px", color: "red" }}
+            style={{ paddingTop: "20px", paddingLeft: "40px", color: "red" }}
+          >
+            Coming soon!
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  createEventNFTs = () => {
+    return (
+      <div className={classes.TicketCreationPane}>
+        <div className={classes.TicketCreationTitle}>
+          Event NFTs
+          <div
+            style={{ paddingTop: "20px", paddingLeft: "40px", color: "red" }}
           >
             Coming soon!
           </div>
@@ -861,7 +783,7 @@ class App extends Component {
     return (
       <div
         style={{
-          paddingTop: "20px",
+          paddingTop: "30px",
           paddingBottom: "20px",
           paddingLeft: "40px",
         }}
@@ -881,18 +803,22 @@ class App extends Component {
   };
 
   changeDisplay = (view) => {
-    console.log("clicked");
     this.setState({ display: view });
   };
 
   header = (
     <header
       style={{
-        paddingLeft: "10px",
-        paddingRight: "10px",
+        paddingLeft: "20px",
+        paddingRight: "60px",
+        height: "80px",
+        width: "100%",
+        boxSizing: "border-box",
+        zIndex: "200",
         display: "grid",
         gridTemplateColumns: "80px 400px auto",
         backgroundColor: "#000",
+        position: "fixed",
       }}
     >
       <div>
@@ -908,14 +834,14 @@ class App extends Component {
       </div>
       <div
         style={{
-          paddingTop: "15px",
+          paddingTop: "10px",
           listStyleType: "none",
-          fontSize: "30px",
+          fontSize: "36px",
           fontWeight: "600",
           color: "#4792F7", //#76AFF9
         }}
       >
-        Blü Mün Crypto Tickets
+        Blü Mün Event Tickets
       </div>
       <div
         style={{
@@ -925,27 +851,22 @@ class App extends Component {
         <ul
           style={{
             display: "grid",
-            gridTemplateColumns: "70px 120px 100px 140px 140px",
+            gridTemplateColumns: "auto 100px 120px 110px 160px 160px",
+            columnGap: "20px",
           }}
         >
+          <li></li>
           <li
-            style={{
-              paddingTop: "30px",
-              listStyleType: "none",
-              color: "#F0AE00",
-            }}
+            className={classes.HeaderItem}
             onClick={() => {
+              console.log("display: ", this.state.display)
               this.changeDisplay("events");
             }}
           >
-            Events
+            All Events
           </li>
           <li
-            style={{
-              paddingTop: "30px",
-              listStyleType: "none",
-              color: "#F0AE00",
-            }}
+            className={classes.HeaderItem}
             onClick={() => {
               this.changeDisplay("create");
             }}
@@ -953,11 +874,7 @@ class App extends Component {
             Issue Tickets
           </li>
           <li
-            style={{
-              paddingTop: "30px",
-              listStyleType: "none",
-              color: "#F0AE00",
-            }}
+            className={classes.HeaderItem}
             onClick={() => {
               this.changeDisplay("myEvents");
             }}
@@ -965,11 +882,7 @@ class App extends Component {
             My Events
           </li>
           <li
-            style={{
-              paddingTop: "30px",
-              listStyleType: "none",
-              color: "#F0AE00",
-            }}
+            className={classes.HeaderItem}
             onClick={() => {
               this.changeDisplay("myTickets");
             }}
@@ -977,11 +890,7 @@ class App extends Component {
             My Ticket Wallet
           </li>
           <li
-            style={{
-              paddingTop: "30px",
-              listStyleType: "none",
-              color: "#F0AE00",
-            }}
+            className={classes.HeaderItem}
             onClick={() => {
               this.changeDisplay("exchange");
             }}
@@ -996,93 +905,419 @@ class App extends Component {
   accountHeader = () => {
     if (this.state.isLoading) {
       return (
-        <div
-          style={{ paddingTop: "30px", textAlign: "center", fontSize: "26px" }}
-        >
+        <div className={classes.AccountHeader}>
           Who are you?
         </div>
       );
     } else {
       return (
-        <div
-          style={{ paddingTop: "30px", textAlign: "center", fontSize: "26px" }}
-        >
+        <div className={classes.AccountHeader}>
           Hello account: {this.state.accounts[0]}
         </div>
       );
     }
   };
 
+  issueTicketsDisplay = () => {
+    if(this.state.display === "create" || this.state.display === "all") {
+      return (
+        <div className={classes.PageDisplay}>
+          <div className={classes.PageTitle}>
+            Issue Tickets
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "700px 700px 700px",
+              columnGap: "20px"
+            }}
+          >
+            <div>{this.createGATickets()}</div>
+            <div>{this.createASTickets()}</div>
+            <div>{this.createEventNFTs()}</div>
+          </div>
+        </div>
+      )
+    } else return null
+  }
+
+  eventsDisplay = () => {
+    if(this.state.display === "events" || this.state.display === "all") {
+      return (
+        <div className={classes.PageDisplay}>
+          <div className={classes.PageTitle}>
+            All Events
+          </div>
+          <div
+            style={{
+              paddingTop: "30px",
+              paddingRight: "40px",
+              paddingBottom: "30px", 
+              paddingLeft: "40px"
+            }}
+          >
+            <section className={classes.Events}>
+              {this.eventList()}
+            </section>
+          </div>
+        </div>
+      )
+    } else return null
+  }
+
+  exchangeDisplay = () => {
+    if(this.state.display === "exchange" || this.state.display === "all") {
+      return (
+        <div className={classes.PageDisplay}>
+          <div className={classes.PageTitle}>
+            Ticket Exchange
+          </div>
+          <div>{this.ticketExchange()}</div>
+        </div>
+      )
+    } else return null
+  }
+
+  myTicketsDisplay = () => {
+    if(this.state.display === "myTickets" || this.state.display === "all") {
+      return (
+        <div className={classes.PageDisplay}>
+          <div className={classes.PageTitle}>
+            My Ticket Wallet
+          </div>
+          <div
+            style={{
+              width: "800px",
+              paddingTop: "30px",
+              paddingRight: "40px",
+              paddingBottom: "30px", 
+              paddingLeft: "40px"
+            }}>{this.myTicketsList()}</div>
+        </div>
+      )
+    } else return null
+  }
+
+  transferModalBody = () => {
+    const { web3, accounts, gaTicketDetails, transferOrder } = this.state;
+      const gaEvent = new web3.eth.Contract(
+        GAEventTicket.abi,
+        transferOrder.address
+      );
+    
+    let ticketsArray = [0]
+    for (let i = 1; i <= transferOrder.available; i++) {
+      ticketsArray.push(i);
+    }
+    
+      return (
+        <Fragment>
+          <div style={{fontSize: "34px"}}>Ticket Transfer</div>
+          <div style={{fontSize: "24px"}}>{transferOrder.name}</div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "50% 48%",
+              columnGap: "2%"
+            }}>
+              <div style={{textAlign: "right"}}>
+                <div style={{fontSize: "18px"}}>Ticket Symbol:</div>
+                <div style={{fontSize: "18px"}}>Tickets Owned:</div>
+                <div style={{fontSize: "18px"}}>Ticket Price:</div>
+              </div>
+              <div style={{textAlign: "left"}}>
+            <div style={{fontSize: "18px"}}>{transferOrder.symbol}</div>
+            <div style={{fontSize: "18px"}}>{transferOrder.amount}</div>
+            <div style={{fontSize: "18px"}}>{transferOrder.price} wei</div>
+              </div>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "60% 38%",
+              columnGap: "2%",
+              paddingTop: "15px"
+            }}>
+            <div style={{fontSize: "24px", textAlign: "right", paddingTop: "8px"}}># Tickets to Transfer</div>
+            <div style={{fontSize: "24px", textAlign: "left"}}>
+              <select
+                style={{
+                  padding: "9px 5px",
+                  border: "1px solid lightgrey",
+                  boxSizing: "borderBox",
+                  width: "105px",
+                  lineHeight: "1.75",
+                  cursor: "pointer"}}
+                type="text"
+                id="input box time selection"
+                value={transferOrder.quantity}
+                name="tickets"
+                onChange={(event) => {
+                  let tempOrder = {...transferOrder};
+                  tempOrder.quantity = event.target.value;
+                  this.setState({transferOrder: tempOrder})
+                }}
+                required
+              >{ticketsArray.map(number => (<option>{number}</option>))}</select>
+            </div>
+            
+          </div>
+          <div style={{paddingTop: "20px"}}>
+            <button
+              className={
+                parseInt(this.state.transferOrder.quantity) === 0
+                  ? classes.ButtonBlueSmallOpac
+                  : classes.ButtonBlueSmall
+              }
+              disabled={parseInt(this.state.transferOrder.quantity) === 0}
+              onClick={async () => {
+                this.setState({modalSpinner: true});
+                let tempOrder = {...this.state.transferOrder};
+
+                let value = tempOrder.quantity * tempOrder.primaryPrice;
+
+                try {
+                  await gaEvent.methods
+                    .primaryTransfer(tempOrder.quantity)
+                    .send({ from: accounts[0], value: value });
+                    this.setState({modalSpinner: false, transactionSuccess: "success"})
+
+                } catch (error) {
+                  console.log("Something happened")
+                  this.setState({modalSpinner: false, transactionSuccess: "failure"})
+                }
+              }}
+            >EXECUTE TRANSFER</button>
+          </div>
+          <div style={{paddingTop: "20px"}}>
+            <button
+              className={classes.ButtonGreySmall}
+              onClick={() => {
+                this.setState({ transferOrder: {}, modal: "none"});
+            }}>CANCEL TRANSFER</button>
+          </div>
+        </Fragment>
+      ) 
+  }
+
+  orderModalBody = () => {
+    const { web3, accounts, gaTicketDetails, newOrder } = this.state;
+      const gaEvent = new web3.eth.Contract(
+        GAEventTicket.abi,
+        newOrder.address
+      );
+
+    let ticketsArray = [0]
+    for (let i = 1; i <= newOrder.available; i++) {
+      ticketsArray.push(i);
+    }
+
+    if(this.state.modalSpinner) {
+      return (
+        <Fragment>
+          <div style={{fontSize: "24px", paddingTop: "60px"}}>Your order is being processed</div>
+          <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
+          <div style={{fontSize: "24px", paddingTop: "100px"}}>This can take up to 30 seconds</div>
+        </Fragment>
+      )
+    } else if (this.state.transactionSuccess === "none") {
+      return (
+        <Fragment>
+          <div style={{fontSize: "34px"}}>Ticket Order</div>
+          <div style={{fontSize: "24px"}}>{newOrder.name}</div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "50% 48%",
+              columnGap: "2%"
+            }}>
+              <div style={{textAlign: "right"}}>
+                <div style={{fontSize: "18px"}}>Ticket Symbol:</div>
+                <div style={{fontSize: "18px"}}>Tickets Available:</div>
+                <div style={{fontSize: "18px"}}>Ticket Price:</div>
+              </div>
+              <div style={{textAlign: "left"}}>
+            <div style={{fontSize: "18px"}}>{newOrder.symbol}</div>
+            <div style={{fontSize: "18px"}}>{newOrder.available}</div>
+            <div style={{fontSize: "18px"}}>{newOrder.primaryPrice} wei</div>
+              </div>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "60% 38%",
+              columnGap: "2%",
+              paddingTop: "15px"
+            }}>
+            <div style={{fontSize: "24px", textAlign: "right", paddingTop: "8px"}}>Select Ticket Quantity</div>
+            <div style={{fontSize: "24px", textAlign: "left"}}>
+              <select
+                style={{
+                  padding: "9px 5px",
+                  border: "1px solid lightgrey",
+                  boxSizing: "borderBox",
+                  width: "105px",
+                  lineHeight: "1.75",
+                  cursor: "pointer"}}
+                type="text"
+                id="input box time selection"
+                value={newOrder.quantity}
+                name="tickets"
+                onChange={(event) => {
+                  let tempOrder = {...newOrder};
+                  tempOrder.quantity = event.target.value;
+                  this.setState({newOrder: tempOrder})
+                }}
+                required
+              >{ticketsArray.map(number => (<option>{number}</option>))}</select>
+            </div>
+            
+            <div style={{fontSize: "24px", textAlign: "right"}}>Purchase Amount:</div>
+            <div style={{fontSize: "24px", textAlign: "left"}}>{newOrder.quantity * newOrder.primaryPrice} wei</div>
+          </div>
+          <div style={{paddingTop: "20px"}}>
+            <button
+              className={
+                parseInt(this.state.newOrder.quantity) === 0
+                  ? classes.ButtonGreenSmallOpac
+                  : classes.ButtonGreenSmall
+              }
+              disabled={parseInt(this.state.newOrder.quantity) === 0}
+              onClick={async () => {
+                this.setState({modalSpinner: true});
+                let tempOrder = {...this.state.newOrder};
+
+                let value = tempOrder.quantity * tempOrder.primaryPrice;
+
+                try {
+                  await gaEvent.methods
+                    .primaryTransfer(tempOrder.quantity)
+                    .send({ from: accounts[0], value: value });
+                    this.setState({modalSpinner: false, transactionSuccess: "success"})
+
+                } catch (error) {
+                  console.log("Something happened")
+                  this.setState({modalSpinner: false, transactionSuccess: "failure"})
+                }
+              }}
+            >SUBMIT ORDER</button>
+          </div>
+          <div style={{paddingTop: "20px"}}>
+            <button
+              className={classes.ButtonGreySmall}
+              onClick={() => {
+                this.setState({ newOrder: {}, modal: "none"});
+            }}>CANCEL ORDER</button>
+          </div>
+        </Fragment>
+      ) 
+    } else if (this.state.transactionSuccess === "failure") {
+      return (
+        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was not successfull
+          <div style={{paddingTop: "40px"}}>
+            <button
+              className={classes.ButtonGreySmall}
+              onClick={() => {
+                this.setState({ newOrder: {}, modal: "none", modalSpinner: false, transactionSuccess: "none"});
+
+            }}>CONTINUE</button>
+          </div>
+
+
+        </div>
+      )
+    } else {
+      let tempOrder = {...this.state.newOrder};
+      return (
+        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
+          <div style={{paddingTop: "40px"}}>
+            <button
+              className={classes.ButtonGreySmall}
+              onClick={async() => {
+              const result = await gaEvent.methods
+                .balanceOf(gaTicketDetails[tempOrder.index].creator)
+                .call();
+              let tempState = [...this.state.gaTicketDetails];
+              tempState[newOrder.index].available = result;
+              this.setState({ gaTicketDetails: tempState, newOrder: {}, display: "myTickets", modal: "none", modalSpinner: false, transactionSuccess: "none"});
+            }
+            }>CONTINUE</button>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  orderModal =  () => {
+    if(this.state.modal === "buy") {
+      const { web3, accounts, gaTicketDetails, newOrder } = this.state;
+      return (
+        <Fragment>
+          <div className={classes.Backdrop}></div>
+          <div
+            style={{
+              transform: this.state.modal === "buy" ? "translateY(0)" : "translateY(-100vh)",
+              opacity: this.state.modal === "buy" ? "1" : "0",
+            }}
+            className={classes.Modal}
+          >
+            {this.orderModalBody()}
+          </div>
+        </Fragment>
+      )
+    } else
+      return null;
+  }
+
+  transferModal =  () => {
+    if(this.state.modal === "transfer") {
+      const { web3, accounts, gaTicketDetails, newOrder } = this.state;
+      return (
+        <Fragment>
+          <div className={classes.Backdrop}></div>
+          <div
+            style={{
+              transform: this.state.modal === "transfer" ? "translateY(0)" : "translateY(-100vh)",
+              opacity: this.state.modal === "transfer" ? "1" : "0",
+            }}
+            className={classes.Modal}
+          >
+            {this.transferModalBody()}
+          </div>
+        </Fragment>
+      )
+    } else
+      return null;
+  }
+
   render() {
     return (
-      <div>
+      <Fragment>
         {this.header}
         <div>{this.accountHeader()}</div>
-        <div
-          style={{
-            paddingTop: "30px",
-            paddingLeft: "85px",
-            backgroundColor: "#fff",
-          }}
-        >
-          {this.state.display === "create" || this.state.display === "all" ? (
-            <div style={{ paddingBottom: "30px" }}>
-              <div
-                style={{
-                  fontSize: "30px",
-                  fontWeight: "700",
-                  textDecoration: "underline",
-                }}
-              >
-                Issue Tickets
-              </div>
-              <div>{this.createGATickets()}</div>
-              <div>{this.createASTickets()}</div>
-            </div>
-          ) : null}
+        <div>{this.orderModal()}</div>
+        <div>{this.transferModal()}</div>
 
-          {this.state.display === "events" || this.state.display === "all" ? (
-            <div style={{ paddingTop: "20px" }}>
-              <div style={{ fontSize: "26px", fontWeight: "600" }}>Events</div>
-              <div>{this.eventList()}</div>
-            </div>
-          ) : null}
+        
+
+        <div className={classes.MainDisplay}>
+          {this.eventsDisplay()}
+          {this.issueTicketsDisplay()}
+          {this.exchangeDisplay()}
+          {this.myTicketsDisplay()}
+
 
           {this.state.display === "myEvents" || this.state.display === "all" ? (
-            <div style={{ paddingTop: "20px" }}>
-              <div style={{ fontSize: "26px", fontWeight: "600" }}>
-                My Events
+            <div className={classes.Main}>
+              <div className={classes.PageTitle}>My Events
               </div>
-              <div>{this.myEventList()}</div>
-            </div>
-          ) : null}
-
-          {this.state.display === "myTickets" ||
-          this.state.display === "all" ? (
-            <div style={{ paddingTop: "20px" }}>
-              <div style={{ fontSize: "26px", fontWeight: "600" }}>
-                My Ticket Wallet
-              </div>
-              <div>{this.myTicketsList()}</div>
-            </div>
-          ) : null}
-
-          {this.state.display === "exchange" || this.state.display === "all" ? (
-            <div style={{ paddingBottom: "30px" }}>
-              <div
-                style={{
-                  fontSize: "30px",
-                  fontWeight: "700",
-                  textDecoration: "underline",
-                }}
-              >
-                Ticket Exchange
-              </div>
-              <div>{this.ticketExchange()}</div>
+              <section className={classes.Events}>
+                {this.myEventList()}
+              </section>
             </div>
           ) : null}
         </div>
-      </div>
+      </Fragment>
     );
   }
 }
@@ -1093,49 +1328,33 @@ export default App;
 async loadBlockchainData() {
   // Get network provider and web3 instance.
   const web3 = await getWeb3(); //dup
-  console.log("web3: ", web3); //dup
 
   // function from "web3.eth.net" library that gets current network ID
   const networkId = await web3.eth.net.getId(); //dup
-  console.log("networkId: ", networkId); //dup
 
   // function from "web3.eth.net" library that gets current network ID
   const network = await web3.eth.net.getNetworkType(); //dup
-  console.log("network: ", network); //dup
 
   const accounts = await web3.eth.getAccounts(); //dup
-  console.log("accounts: ", accounts); //dup
 
-  console.log("Token: ", Token); //dup
-  console.log("Token abi: ", Token.abi); //dup
-  console.log("Token address: ", Token.networks[networkId].address); //dup
   const address1 = Token.networks[networkId].address; //dup
-  console.log("Token address: ", address1); //dup
 
   // create an instance of the contract using an instance of Web3
   const token = new web3.eth.Contract(
     Token.abi,
     Token.networks[networkId].address
   );
-  console.log("token: ", token);
 
   const totalSupply = await token.methods.totalSupply().call();
-  console.log("Total Supply: ", totalSupply);
 
-  console.log("Factory: ", Factory); //dup
-  console.log("Factory abi: ", Factory.abi); //dup
-  console.log("Factory address: ", Factory.networks[networkId].address); //dup
   const address2 = Factory.networks[networkId].address; //dup
-  console.log("Factory address: ", address2); //dup
 
   // create an instance of the contract using an instance of Web3
   const factory = new web3.eth.Contract( //dup
     Factory.abi, //dup
     Factory.networks[networkId].address //dup
   );
-  console.log("factory: ", factory); //dup
 
   const owner = await token.methods.owner().call();
-  console.log("Owner: ", owner);
 }
 */
