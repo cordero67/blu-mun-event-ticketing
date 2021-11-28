@@ -2,7 +2,7 @@
 
 const { assert } = require("chai");
 
-const Token = artifacts.require("./Token");
+//const Token = artifacts.require("./Token");
 const Ticket = artifacts.require("./GAEventTickets");
 const Exchange = artifacts.require("./Exchange");
 

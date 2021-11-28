@@ -46,6 +46,10 @@ class App extends Component {
       //newOrder: [{ number: null, amount: null }],
       //},
     ],
+    gaTransferWarnings: {
+      recipientRemaining: false,
+      recipient: "true",
+    },
     newEvent: { name: "", symbol: "", initial: "", price: "" },
     newOrder: {},
     transferOrder: {},
@@ -176,7 +180,9 @@ class App extends Component {
           //console.log("I did not create or buy tickets to this event");
         }
 
-        //console.log("MY EVENTS: ", this.state.myEvents);
+        console.log("Hello");
+        console.log("MY tickets: ", this.state.myTickets);
+        console.log("Goodbye");
 
         if (index === gaTickets.length - 1) {
           this.setState({ isLoading: false });
@@ -186,7 +192,7 @@ class App extends Component {
   };
 
   eventButtons = (contains, item, index) => {
-    const { web3 } = this.state;
+    const { web3, gaTicketDetails } = this.state;
     if(contains) {
       return (
         <div style={{paddingTop: "20px", paddingBottom: "10px"}}>
@@ -216,14 +222,23 @@ class App extends Component {
                 GAEventTicket.abi,
                 item.address)
 
+              let newItem = {...item}
+;
               let available = await gaEvent.methods
                 .balanceOf(item.creator)
                 .call();
 
-              item.index = index;
-              item.available = available;
-              item.quantity = 0;
-              this.setState({modal: "buy", newOrder: item})
+
+
+
+
+
+              newItem.index = index;
+              newItem.available = available;
+              newItem.quantity = 0;
+              this.setState({modal: "buy", newOrder: newItem})
+              console.log("Buy item: ", item)
+              console.log("gaTicketDetails: ", gaTicketDetails)
             }}
           >
             BUY TICKETS
@@ -242,6 +257,7 @@ class App extends Component {
       return (
         <Fragment>
           {gaTicketDetails.map((item, index) => {
+    console.log("New order: ", this.state.newOrder)
             let contains = false;
             if (this.state.myEvents.includes(item.address)) {
               contains = true;
@@ -341,6 +357,7 @@ class App extends Component {
 
   myTicketsList = () => {
     const { myTickets } = this.state;
+    console.log("Transfer order: ", this.state.transferOrder)
     if (this.state.isLoading) {
       return <div>Loading...</div>;
     } else if (!(myTickets.length === 0)) {
@@ -372,8 +389,17 @@ class App extends Component {
                 <div style={{paddingLeft: "160px", paddingTop: "20px", paddingBottom: "30px"}}>
                   <button
                     className={classes.ButtonBlueSmall}
+
                     onClick={() => {
-                      this.setState({modal: "transfer", transferOrder: item})
+                      let newItem = {...item}
+
+                      newItem.transferring = 0;
+                      newItem.recipient = "";
+                      console.log("item: ", item)
+                      console.log("newItem: ", newItem)
+                      this.setState({modal: "transfer", transferOrder: newItem})
+                      console.log("transfer Order: ", this.state.transferOrder)
+                      console.log("Transfer order: ", this.state.transferOrder)
                     }}
                   >TRANSFER TICKETS</button>
                 </div>
@@ -424,6 +450,13 @@ class App extends Component {
     let newEvent = { ...this.state.newEvent };
     newEvent[event.target.name] = event.target.value;
     this.setState({ newEvent: newEvent });
+  };
+
+  
+  updateTransferOrder = (event) => {
+    let newOrder = { ...this.state.transferOrder };
+    newOrder[event.target.name] = event.target.value;
+    this.setState({ transferOrder: newOrder });
   };
 
   updateGaWarnings = (event) => {
@@ -1006,11 +1039,20 @@ class App extends Component {
       );
     
     let ticketsArray = [0]
-    for (let i = 1; i <= transferOrder.available; i++) {
+    for (let i = 1; i <= transferOrder.amount; i++) {
       ticketsArray.push(i);
     }
     
-      return (
+    if(this.state.modalSpinner) {
+     return (
+        <Fragment>
+          <div style={{fontSize: "24px", paddingTop: "60px"}}>Your tickets are being transferred</div>
+          <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
+          <div style={{fontSize: "24px", paddingTop: "100px"}}>This can take up to 30 seconds</div>
+        </Fragment>
+      )
+    } else if (this.state.transactionSuccess === "none") {
+            return (
         <Fragment>
           <div style={{fontSize: "34px"}}>Ticket Transfer</div>
           <div style={{fontSize: "24px"}}>{transferOrder.name}</div>
@@ -1050,11 +1092,14 @@ class App extends Component {
                   cursor: "pointer"}}
                 type="text"
                 id="input box time selection"
-                value={transferOrder.quantity}
-                name="tickets"
+                value={transferOrder.transferring}
+                name="transferring"
                 onChange={(event) => {
+                  console.log("Value: ", event.target.value);
                   let tempOrder = {...transferOrder};
-                  tempOrder.quantity = event.target.value;
+                  console.log("Temp Order: ", tempOrder);
+                  tempOrder.transferring = event.target.value;
+                  console.log("Transferring: ", tempOrder);
                   this.setState({transferOrder: tempOrder})
                 }}
                 required
@@ -1062,24 +1107,68 @@ class App extends Component {
             </div>
             
           </div>
+
+
+
+        <div>
+          <div className={classes.InputBoxLabel}>
+            Recipient address<span style={{ color: "red" }}>*</span>
+          </div>
+          <div className={classes.InputBox}>
+            <input
+              className={
+                this.state.gaTransferWarnings.recipient
+                  ? classes.InputBoxContentError
+                  : classes.InputBoxContent
+              }
+              onFocus={() => {
+                let tempWarnings = { ...this.state.gaTransferWarnings };
+                tempWarnings.recipientRemaining = true;
+                this.setState({ gaTransferWarnings: tempWarnings });
+              }}
+              onBlur={() => {
+                let tempWarnings = { ...this.state.gaTransferWarnings };
+                tempWarnings.recipientRemaining = false;
+                this.setState({ gaTransferWarnings: tempWarnings });
+              }}
+              type="text"
+              maxLength="42"
+              placeholder="42 hexadecimal address my starting with 0x"
+              name="recipient"
+              value={this.state.transferOrder.recipient}
+              onChange={(event) => {
+                this.updateTransferOrder(event);
+                console.log("transfer order: ", this.state.transferOrder)
+                //this.updateGaWarnings(event);
+              }}
+            ></input>
+            {this.state.gaTransferWarnings.recipient &&
+              this.state.gaTransferWarnings.recipient !== "true"
+              ? this.warningMessage(this.state.gaTransferWarnings.recipient)
+              : this.state.gaTransferWarnings.recipientRemaining
+              ? this.remainingMessage(42, 10, this.state.transferOrder.recipient)
+              : null}
+          </div>
+        </div>
+
           <div style={{paddingTop: "20px"}}>
             <button
               className={
-                parseInt(this.state.transferOrder.quantity) === 0
+                parseInt(this.state.transferOrder.transferring) === 0
                   ? classes.ButtonBlueSmallOpac
                   : classes.ButtonBlueSmall
               }
-              disabled={parseInt(this.state.transferOrder.quantity) === 0}
+              disabled={parseInt(this.state.transferOrder.transferring) === 0}
               onClick={async () => {
                 this.setState({modalSpinner: true});
                 let tempOrder = {...this.state.transferOrder};
-
-                let value = tempOrder.quantity * tempOrder.primaryPrice;
+                console.log("transferOrder: ", this.state.transferOrder.transferring)
 
                 try {
                   await gaEvent.methods
-                    .primaryTransfer(tempOrder.quantity)
-                    .send({ from: accounts[0], value: value });
+                    //.transfer("0x115d7a7E4Dbc05A825722898FFE331e45e1E2157", this.state.transferOrder.transferring)
+                    .transfer(this.state.transferOrder.recipient, this.state.transferOrder.transferring)
+                    .send({ from: accounts[0]});
                     this.setState({modalSpinner: false, transactionSuccess: "success"})
 
                 } catch (error) {
@@ -1093,11 +1182,46 @@ class App extends Component {
             <button
               className={classes.ButtonGreySmall}
               onClick={() => {
-                this.setState({ transferOrder: {}, modal: "none"});
+                this.setState({ transferOrder: {}, modal: "none", modalSpinner: false});
             }}>CANCEL TRANSFER</button>
           </div>
         </Fragment>
       ) 
+    } else if (this.state.transactionSuccess === "failure") {
+      return (
+        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your tickets were not transferred
+          <div style={{paddingTop: "40px"}}>
+            <button
+              className={classes.ButtonGreySmall}
+              onClick={() => {
+                this.setState({ transferOrder: {}, modal: "none", modalSpinner: false, transactionSuccess: "none"});
+
+            }}>CONTINUE</button>
+          </div>
+
+
+        </div>
+      )
+    } else {
+      let tempOrder = {...this.state.transferOrder};
+      return (
+        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
+          <div style={{paddingTop: "40px"}}>
+            <button
+              className={classes.ButtonGreySmall}
+              onClick={async() => {
+              //const result = await gaEvent.methods
+              //  .balanceOf(gaTicketDetails[tempOrder.index].creator)
+              //  .call();
+              //let tempState = [...this.state.gaTicketDetails];
+              //tempState[newOrder.index].available = result;
+              this.setState({ transferOrder: {}, display: "myTickets", modal: "none", modalSpinner: false, transactionSuccess: "none"});
+            }
+            }>CONTINUE</button>
+          </div>
+        </div>
+      )
+    }
   }
 
   orderModalBody = () => {
@@ -1206,7 +1330,7 @@ class App extends Component {
             <button
               className={classes.ButtonGreySmall}
               onClick={() => {
-                this.setState({ newOrder: {}, modal: "none"});
+                this.setState({ newOrder: {}, modal: "none", modalSpinner: false});
             }}>CANCEL ORDER</button>
           </div>
         </Fragment>
