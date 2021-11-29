@@ -26,11 +26,11 @@ Key folders/files of the project are located in the project’s root directory:
 #### > Consensys Project Documents
 #####    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
 
-        avoiding_common_attacks.md
+#####        avoiding_common_attacks.md
 
-        deployed_address.txt
+#####        deployed_address.txt
 
-        design_pattern_decisions.md
+#####        design_pattern_decisions.md
 
 #### > migrations
 #####    Contains truffle migration scripts.
@@ -48,7 +48,7 @@ Key folders/files of the project are located in the project’s root directory:
 #####       Houses the all smart contract files written in Solidity.
 
 #### > test
-    Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
+#####    Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
 
 #### package-lock.json
 #####    Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
