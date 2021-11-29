@@ -7,8 +7,11 @@ The Blü Mün Event Ticketing DApp will be released in several phases (see secti
 Phase 1 of the DApp has been completed as is intended for submission as the final project for the 2021 Consensys Blockchain Developer Bootcamp. Phase 1 consists of four different user screens.
 
 •	Issue general admission tickets
+
 •	Purchase general admission tickets from event creator
+
 •	Generate a list of events created by a given event creator
+
 •	Generate a ticket wallet for a given ticket buyer
 
 The Blü Mün Event Ticketing DApp can be accessed at
