@@ -100,6 +100,26 @@ Tests are set to run on port 7545. To compile, migrate and test using port 8545 
 
 
 ## User Interaction
+When initially visiting the DApps website “.com”, the user is presented with a list of all events that have tickets available for sale. They can navigate to the five different screens associated with the DApp (“Events”, “Issue Tickets”, “My Events”, “My Ticket Wallet” and “Ticket Exchange”) by selecting the appropriate link in the top right-hand corner of the DApp, i.e. the header/menu bar.
+
+“Events” Tab
+
+The user is shown will all events and the ticket availability for each. If an event has tickets for sale, the user can select the green “BUY TICKETS” button which will lead them through the ticket purchase process. Upon a successful completion of a purchase, the user is rerouted to the “My Ticket Wallet” which will include the most recently purchased tickets. Note if the user has created this event they will instead see a blue “MANAGE YOUR EVENT” button which takes them to the “My Events” tab.
+
+“Issue Tickets” tab
+
+The user can create a general admission ticket offering. The ability to issue Assigned Seating Tickets and Event NFTs will be included in Phase 4 of this project.
+
+“My Events” Tab
+
+The user is shown all the events they have created. The ability to modify an existing event will be included in Phase 2 of this project. 
+“My Ticket Wallet” Tab
+
+The user is shown all the tickets they have purchased. From here the user can freely (less gas costs) transfer a ticket(s) to another user by selecting the blue “TRANSFER TICKET” button which will lead them through the ticket transfer process.
+
+“Ticket Exchange”
+
+The user will be able to list their tickets for sale and to buy tickets from the secondary market. This functionality will be included in Phase 6 of this project.
 
 
 ## Blü Mün Event Ticketing DApp
