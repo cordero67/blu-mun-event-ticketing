@@ -19,52 +19,53 @@ Key folders/files of the project are located in the project’s root directory:
 
     > Consensys Project Documents
 
-    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
+        Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
 
-    avoiding_common_attacks.md
+            avoiding_common_attacks.md
 
-    deployed_address.txt
+            deployed_address.txt
 
-    design_pattern_decisions.md
+            design_pattern_decisions.md
 
     > migrations
 
-    Contains truffle migration scripts.
+        Contains truffle migration scripts.
 
     > src
 
-    Contains files that support and generate the front-end interface:
+        Contains files that support and generate the front-end interface:
 
-        > abis
+            > abis
 
-        Houses the abis for each smart contract the was compiled and migrated.
-        > components
+                Houses the abis for each smart contract the was compiled and migrated.
 
-        Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
+            > components
 
-        > contracts
-        
-        Houses the all smart contract files written in Solidity.
+                Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
 
-> test
+            > contracts
 
-Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
+                Houses the all smart contract files written in Solidity.
 
-package-lock.json
+        > test
 
-Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
+            Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
 
-package.json
+    package-lock.json
 
-Contains a list of all dependencies.
+        Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
 
-README.md
+    package.json
 
-Contains a description of the project.
+        Contains a list of all dependencies.
 
-truffle-config.js
+    README.md
 
-Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
+        Contains a description of the project.
+
+    truffle-config.js
+
+        Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
 
 User Interaction
 
