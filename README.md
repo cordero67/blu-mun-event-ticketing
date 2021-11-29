@@ -41,15 +41,15 @@ Key folders/files of the project are located in the project’s root directory:
 
 ######    Contains files that support and generate the front-end interface:
 
-        > abis
+#####        > abis
 
             Houses the abis for each smart contract the was compiled and migrated.
 
-        > components
+####        > components
 
             Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
 
-        > contracts
+####        > contracts
 
             Houses the all smart contract files written in Solidity.
 
