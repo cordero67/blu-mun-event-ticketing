@@ -6,7 +6,7 @@ The Blü Mün Event Ticketing DApp is a blockchain based ticketing solution that
 
 The Blü Mün Event Ticketing DApp will be released in several phases (see "Blü Mün Event Ticketing DApp Construction" section below for description of all phases).
 
-Phase 1 of the DApp has been completed as is intended for submission as the final project for the 2021 Consensys Blockchain Developer Bootcamp. Phase 1 consists of four different user screens.
+__Phase 1 of the DApp has been completed as is intended for submission as the final project for the 2021 Consensys Blockchain Developer Bootcamp. Phase 1 consists of four different user screens.__
 
 *	Issue general admission tickets
 
@@ -24,7 +24,7 @@ The Blü Mün Event Ticketing DApp can be accessed at
 Key folders/files of the project are located in the project’s root directory:
 
 #### > Consensys Project Documents
-######    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
+#####    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
 
         avoiding_common_attacks.md
 
@@ -33,34 +33,34 @@ Key folders/files of the project are located in the project’s root directory:
         design_pattern_decisions.md
 
 #### > migrations
-######    Contains truffle migration scripts.
+#####    Contains truffle migration scripts.
 
 #### > src
-######    Contains files that support and generate the front-end interface:
+#####    Contains files that support and generate the front-end interface:
 
 ####        > src/abis
-######       Houses the abis for each smart contract the was compiled and migrated.
+#####       Houses the abis for each smart contract the was compiled and migrated.
 
 ####         > src/components
-######       Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
+#####       Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
 
 ####         > sbc/contracts
-######       Houses the all smart contract files written in Solidity.
+#####       Houses the all smart contract files written in Solidity.
 
 #### > test
-######    Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
+#####    Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
 
 #### package-lock.json
-######    Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
+#####    Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
 
 #### package.json
-######    Contains a list of all dependencies.
+#####    Contains a list of all dependencies.
 
 #### README.md
-######    Contains a description of the project.
+#####    Contains a description of the project.
 
 #### truffle-config.js
-######    Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
+#####    Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
 
 ## DApp Compilation, Migration and Testing
 
