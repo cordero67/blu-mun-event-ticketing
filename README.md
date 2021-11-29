@@ -132,46 +132,46 @@ Blü Mün Event Ticketing DApp Construction
 
 Blü Mün Event Ticketing DApp will be released in several phases:
 
-Phase 1: General admission tickets primary market issuance (ERC-20 contracts)
+    Phase 1: General admission tickets primary market issuance (ERC-20 contracts)
 
-	Issue general admission tickets
+    •	Issue general admission tickets
 
-	Purchase general admission tickets from event creator
+    •	Purchase general admission tickets from event creator
 
-	Generate a list of events created by event creator
+    •	Generate a list of events created by event creator
 
-	Generate a ticket wallet for a given ticket buyer
+    •	Generate a ticket wallet for a given ticket buyer
 
-Phase 2: Event creator maintenance of general admission ticket offerings
+    Phase 2: Event creator maintenance of general admission ticket offerings
 
-	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
+    •	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
 
-	Modify the state of primary ticket sales, e.g. for sale, paused, completed
+    •	Modify the state of primary ticket sales, e.g. for sale, paused, completed
 
-	Refund ticket buyer(s)
+    •	Refund ticket buyer(s)
 
-Phase 3: Secondary market for general admission tickets
+    Phase 3: Secondary market for general admission tickets
 
-	Modify issuance of general admission tickets to include secondary market parameters
+    •	Modify issuance of general admission tickets to include secondary market parameters
 
-	Create a secondary market where general admission tickets can be bought and sold
+    •	Create a secondary market where general admission tickets can be bought and sold
 
-Phase 4: Assigned seating tickets primary market issuance (ERC-721 and ER-1155 contracts)
+    Phase 4: Assigned seating tickets primary market issuance (ERC-721 and ER-1155 contracts)
 
-	Issue assigned seating tickets
+    •	Issue assigned seating tickets
 
-	Purchase assigned seating tickets from event creator
+    •	Purchase assigned seating tickets from event creator
 
-	Include assigned seating issuances to list of events created by event creator
+    •	Include assigned seating issuances to list of events created by event creator
 
-	Include assigned seating tickets to buyers’ ticket wallets
+    •	Include assigned seating tickets to buyers’ ticket wallets
 
-Phase 5: Event creator maintenance of assigned seating ticket offerings
+    Phase 5: Event creator maintenance of assigned seating ticket offerings
 
-	Update event creator maintenance to include assigned seating issuances
+    •	Update event creator maintenance to include assigned seating issuances
 
-Phase 6: Secondary market for assigned seating tickets
+    Phase 6: Secondary market for assigned seating tickets
 
-	Modify issuance of assigned seating tickets to include secondary market parameters
+    •	Modify issuance of assigned seating tickets to include secondary market parameters
 
-	Include assigned seating issuances to secondary market
+    •	Include assigned seating issuances to secondary market
