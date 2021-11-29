@@ -64,9 +64,7 @@ Key folders/files of the project are located in the project’s root directory:
 #### package.json
 
 ######    Contains a list of all dependencies.
-
 #### README.md
-
 ######    Contains a description of the project.
 
 #### truffle-config.js
