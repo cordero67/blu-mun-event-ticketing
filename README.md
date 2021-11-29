@@ -25,17 +25,17 @@ Key folders/files of the project are located in the project’s root directory:
 
 ##### > Consensys Project Documents
 
-    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
+######    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
 
-######        avoiding_common_attacks.md
+#######        avoiding_common_attacks.md
 
-        deployed_address.txt
+#######        deployed_address.txt
 
-        design_pattern_decisions.md
+#######        design_pattern_decisions.md
 
 ##### > migrations
 
-    Contains truffle migration scripts.
+######    Contains truffle migration scripts.
 
 ##### > src
 
