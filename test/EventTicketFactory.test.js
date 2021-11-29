@@ -21,11 +21,8 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
       from: deployer,
     });
     [deployedTickets] = await factory.getDeployedGAEventTickets();
-    //let deployedTickets = await factory.getDeployedGAEventTickets();
 
     ticket = await GAEventTickets.at(deployedTickets);
-    //ticket = await GAEventTickets.at(deployedTickets[0]);
-    //ticket = await GAEventTickets.new(1000000, deployer);
   });
 
   describe("deployment", () => {
@@ -39,13 +36,11 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
 
     it("tracks the ticket factory manager", async () => {
       const manager = await factory.manager();
-      console.log("manager: ", manager);
       assert.equal(manager, deployer, "the name is registered");
     });
 
     it("tracks the event ticket creator", async () => {
       const creator = await ticket.creator();
-      console.log("creator: ", creator);
       assert.equal(creator, deployer, "the name is registered");
     });
 
@@ -56,7 +51,6 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
 
     it("tracks the event ticket symbol", async () => {
       const result = await ticket.symbol();
-      console.log("Symbol: ", symbol);
       assert.equal(result, symbol, "the event ticket symbol is registered");
     });
 
@@ -71,8 +65,6 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
 
     it("tracks the event ticket total supply", async () => {
       const result = await ticket.totalSupply();
-      //console.log("result.toString(): ", result.toString());
-      //console.log("totalSupply: ", totalSupply);
       assert.equal(
         result,
         totalSupply,
@@ -81,10 +73,7 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
     });
 
     it("assigns the event ticket total  supply to the deployer", async () => {
-      //const result = await ticket.balanceOf(accounts[0]);
       const result = await ticket.balanceOf(deployer);
-      //console.log("result: ", result);
-      //console.log("totalSupply: ", totalSupply);
       assert.equal(
         result,
         totalSupply,
@@ -152,13 +141,10 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
         invalidAmount = 0;
 
         let result = await ticket.balanceOf(receiver);
-        //console.log("Result: ", result.toString());
         try {
           await ticket.transfer(deployer, invalidAmount, { from: receiver });
-          //console.log("Amount is OK");
           assert(false);
         } catch (error) {
-          //console.log("Error message: ", error.message);
           assert.equal(
             error.message,
             "Returned error: VM Exception while processing transaction: revert"
@@ -167,7 +153,6 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
 
         try {
           await ticket.transfer(deployer, invalidAmount, { from: receiver });
-          //console.log("Amount is OK");
           assert(false);
         } catch (error) {
           assert(error);
@@ -190,16 +175,12 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
 
         try {
           await ticket.transfer(invalidAddress, amount, { from: deployer });
-          console.log("Address is VALID");
         } catch (error) {
           assert.equal(
             error.message,
             'AssertionError: expected "invalid address (arg="_to", coderType="address", value=0)" to equal "invalid address (arg="_spender", coderType="address", value=0)'
           );
-          console.log("Address is NOT VALID");
         }
-
-        console.log("Goodbye");
       });
       */
     });
@@ -261,16 +242,12 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
 
         try {
           await ticket.approve(invalidAddress, amount, { from: deployer });
-          console.log("Address is VALID");
         } catch (error) {
           assert.equal(
             error.message,
             'invalid address (arg="_spender", coderType="address", value=0)'
           );
-          console.log("Address is NOT VALID");
         }
-
-        console.log("Goodbye");
       });
       */
     });
@@ -300,7 +277,6 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
       });
 
       it("emits another Transfer event", async () => {
-        //console.log("Result: ", result);
         const log = result.logs[0];
         //console.log("log: ", log);
         assert.equal(
@@ -337,8 +313,6 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
             from: exchange,
           });
         } catch (error) {
-          //console.log("Error: ", error.message);
-
           assert.equal(
             error.message,
             "Returned error: VM Exception while processing transaction: revert",
@@ -352,10 +326,7 @@ contract("GAEventTickets", ([deployer, receiver, exchange, user4, user5]) => {
 
         try {
           await ticket.transfer(invalidAddress, amount, { from: deployer });
-          console.log("Address is VALID");
         } catch (error) {
-          //console.log("Error.message: ", error.message);
-
           assert.equal(
             error.message,
             'invalid address (arg="_to", coderType="address", value=0)',

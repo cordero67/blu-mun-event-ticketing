@@ -1,13 +1,11 @@
 import React, { Component, Fragment } from "react";
 import getWeb3 from "./getWeb3";
-//import Token from "../abis/Token.json";
 import Factory from "../abis/EventTicketingFactory.json";
 import GAEventTicket from "../abis/GAEventTickets.json";
 
 import Spinner from "./Spinner/Spinner";
 
-import Logo from "../blu_mun.jpeg";
-//import Logo from "../blu_mun_alt.jpg";
+import Logo from "./Assets/blu_mun.jpeg";
 
 import classes from "./App.module.css";
 
