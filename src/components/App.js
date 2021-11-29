@@ -257,7 +257,7 @@ class App extends Component {
       return (
         <Fragment>
           {gaTicketDetails.map((item, index) => {
-    console.log("New order: ", this.state.newOrder)
+            console.log("New order: ", this.state.newOrder)
             let contains = false;
             if (this.state.myEvents.includes(item.address)) {
               contains = true;
@@ -299,7 +299,25 @@ class App extends Component {
         </Fragment>
       );
     } else {
-      return <div>There are no events available</div>;
+      return (
+        <div
+          style={{
+            paddingTop: "30px",
+            paddingBottom: "20px",
+            paddingLeft: "40px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "26px",
+              fontWeight: "600",
+              color: "rblack",
+            }}
+          >
+            There are no events available
+          </div>
+        </div>
+      )
     }
   };
 
@@ -351,7 +369,25 @@ class App extends Component {
         </Fragment>
       );
     } else {
-      return <div>You have not created any active events</div>;
+      return (
+        <div
+          style={{
+            paddingTop: "30px",
+            paddingBottom: "20px",
+            paddingLeft: "40px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "26px",
+              fontWeight: "600",
+              color: "rblack",
+            }}
+          >
+            You do not have any active events
+          </div>
+        </div>
+      )
     }
   };
 
@@ -410,7 +446,26 @@ class App extends Component {
         </Fragment>
       );
     } else {
-      return <div>You do not have any active tickets</div>;
+      
+      return (
+        <div
+          style={{
+            paddingTop: "30px",
+            paddingBottom: "20px",
+            paddingLeft: "40px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "26px",
+              fontWeight: "600",
+              color: "rblack",
+            }}
+          >
+            You do not have any active tickets
+          </div>
+        </div>
+      )
     }
   };
 

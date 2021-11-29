@@ -7,3 +7,4 @@ Access Control Design Patterns
 Inheritance and Interfaces
 
 -	"Interface" - The ERC20Interface is used in the construction of "GAEventTickets.sol"
+-	Uses OpneZeppelin SafeMath library: "openzeppelin-solidity/contracts/math/SafeMath.sol";
