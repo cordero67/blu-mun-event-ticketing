@@ -23,7 +23,7 @@ The Blü Mün Event Ticketing DApp can be accessed at
 
 Key folders/files of the project are located in the project’s root directory:
 
-##### > Consensys Project Documents
+#### > Consensys Project Documents
 
 ######    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
 
@@ -33,15 +33,15 @@ Key folders/files of the project are located in the project’s root directory:
 
         design_pattern_decisions.md
 
-##### > migrations
+#### > migrations
 
 ######    Contains truffle migration scripts.
 
-##### > src
+#### > src
 
 ######    Contains files that support and generate the front-end interface:
 
-#####        > src/abis
+####        > src/abis
 
 ######       Houses the abis for each smart contract the was compiled and migrated.
 
@@ -53,23 +53,23 @@ Key folders/files of the project are located in the project’s root directory:
 
 ######       Houses the all smart contract files written in Solidity.
 
-##### > test
+#### > test
 
 ######    Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
 
-##### package-lock.json
+#### package-lock.json
 
 ######    Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
 
-##### package.json
+#### package.json
 
 ######    Contains a list of all dependencies.
 
-##### README.md
+#### README.md
 
 ######    Contains a description of the project.
 
-##### truffle-config.js
+#### truffle-config.js
 
 ######    Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
 
