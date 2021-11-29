@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-Blü Mün Event Ticketing is a blockchain based ticketing solution that allows event creators to issue tickets to an event and subsequently maintain complete control over its entire journey, i.e. both the primary and secondary markets.
+The Blü Mün Event Ticketing DApp is a blockchain based ticketing solution that allows event creators to issue tickets to an event and subsequently maintain complete control over its entire journey, i.e. both the primary and secondary markets.
 
-The Blü Mün Event Ticketing DApp will be released in several phases (see section Blü Mün Event Ticketing DApp Construction for description of all phases).
+The Blü Mün Event Ticketing DApp will be released in several phases (see "Blü Mün Event Ticketing DApp Construction" section below for description of all phases).
 
 Phase 1 of the DApp has been completed as is intended for submission as the final project for the 2021 Consensys Blockchain Developer Bootcamp. Phase 1 consists of four different user screens.
 
@@ -85,41 +85,90 @@ To recreate, perform the following:
 
 This performs the following:
 
-Compiles all .sol files identified by a migrations script (migrations folder of project root directory: ”src.migrations”). This will also generate a “.json” file for each compiled contract that contains the associated contract’s abi and places them in the “src.abis” folder.
+Compiles all .sol files identified by a migrations script (migrations folder of project root directory: ”src/migrations”). This will also generate a “.json” file for each compiled contract that contains the associated contract’s abi and places them in the “src/abis” folder.
 
 Migrates all .sol files to the designated blockchain and augments “networks” field inside each “.json” files generated during the preceding compilation step.
 
 Executes the “EventTicketFactory.js” file which contains all the associated tests of both the “GAEventTickets" and "EventTicketingFactory" smart contracts.
 Tests are set to run on port 7545. To compile, migrate and test using port 8545 (i.e. ganache-cli), perform the following:
 
-•	Comment out line 24 and uncomment line 25 in the truffle-config.js file.
+* 	Comment out line 24 and uncomment line 25 in the truffle-config.js file.
 
-•	In a terminal window, type “ganache-cli”
+* 	In a terminal window, type “ganache-cli”
 
-•	In a terminal window, type “truffle test”
+* 	In a terminal window, type “truffle test”
 
 
 ## User Interaction
 When initially visiting the DApps website “.com”, the user is presented with a list of all events that have tickets available for sale. They can navigate to the five different screens associated with the DApp (“Events”, “Issue Tickets”, “My Events”, “My Ticket Wallet” and “Ticket Exchange”) by selecting the appropriate link in the top right-hand corner of the DApp, i.e. the header/menu bar.
 
-“Events” Tab
+##### “Events” Tab
 
 The user is shown will all events and the ticket availability for each. If an event has tickets for sale, the user can select the green “BUY TICKETS” button which will lead them through the ticket purchase process. Upon a successful completion of a purchase, the user is rerouted to the “My Ticket Wallet” which will include the most recently purchased tickets. Note if the user has created this event they will instead see a blue “MANAGE YOUR EVENT” button which takes them to the “My Events” tab.
 
-“Issue Tickets” tab
+##### “Issue Tickets” tab
 
 The user can create a general admission ticket offering. The ability to issue Assigned Seating Tickets and Event NFTs will be included in Phase 4 of this project.
 
-“My Events” Tab
+##### “My Events” Tab
 
 The user is shown all the events they have created. The ability to modify an existing event will be included in Phase 2 of this project. 
 “My Ticket Wallet” Tab
 
 The user is shown all the tickets they have purchased. From here the user can freely (less gas costs) transfer a ticket(s) to another user by selecting the blue “TRANSFER TICKET” button which will lead them through the ticket transfer process.
 
-“Ticket Exchange”
+##### “Ticket Exchange” Tab
 
 The user will be able to list their tickets for sale and to buy tickets from the secondary market. This functionality will be included in Phase 6 of this project.
+
+
+## Blü Mün Event Ticketing DApp Construction
+
+Blü Mün Event Ticketing DApp will be released in several phases:
+
+Phase 1: General admission tickets primary market issuance (ERC-20 contracts)
+
+•	Issue general admission tickets
+
+•	Purchase general admission tickets from event creator
+
+•	Generate a list of events created by event creator
+
+•	Generate a ticket wallet for a given ticket buyer
+
+Phase 2: Event creator maintenance of general admission ticket offerings
+
+•	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
+
+•	Modify the state of primary ticket sales, e.g. for sale, paused, completed
+
+•	Refund ticket buyer(s)
+
+Phase 3: Secondary market for general admission tickets
+
+•	Modify issuance of general admission tickets to include secondary market parameters
+
+•	Create a secondary market where general admission tickets can be bought and sold
+
+Phase 4: Assigned seating tickets primary market issuance (ERC-721 and ER-1155 contracts)
+
+•	Issue assigned seating tickets
+
+•	Purchase assigned seating tickets from event creator
+
+•	Include assigned seating issuances to list of events created by event creator
+
+•	Include assigned seating tickets to buyers’ ticket wallets
+
+Phase 5: Event creator maintenance of assigned seating ticket offerings
+
+•	Update event creator maintenance to include assigned seating issuances
+
+Phase 6: Secondary market for assigned seating tickets
+
+•	Modify issuance of assigned seating tickets to include secondary market parameters
+
+•	Include assigned seating issuances to secondary market
 
 
 ## Blü Mün Event Ticketing DApp
@@ -172,52 +221,3 @@ Through blockchain issuance, event creators would have the ability to offer tick
 Additionally, the immutability of the blockchain would help protect would be buyers from purchasing fraudulent tickets.
 
 Moreover, blockchain issuance can allow event creators to receive revenues from ticket sales instantly unlike most current online ticket sellers. This proves most beneficial should the event creator either need such revenues to help pay for the event or need to provide an instance refund should the event be cancelled. This situation was prominent during the recent pandemic where ticketing platforms that hold ticket revenues until the completion of event, where not able to refund ticket holders, leaving event creators unable to correct the situation.
-
-
-## Blü Mün Event Ticketing DApp Construction
-
-Blü Mün Event Ticketing DApp will be released in several phases:
-
-Phase 1: General admission tickets primary market issuance (ERC-20 contracts)
-
-•	Issue general admission tickets
-
-•	Purchase general admission tickets from event creator
-
-•	Generate a list of events created by event creator
-
-•	Generate a ticket wallet for a given ticket buyer
-
-Phase 2: Event creator maintenance of general admission ticket offerings
-
-•	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
-
-•	Modify the state of primary ticket sales, e.g. for sale, paused, completed
-
-•	Refund ticket buyer(s)
-
-Phase 3: Secondary market for general admission tickets
-
-•	Modify issuance of general admission tickets to include secondary market parameters
-
-•	Create a secondary market where general admission tickets can be bought and sold
-
-Phase 4: Assigned seating tickets primary market issuance (ERC-721 and ER-1155 contracts)
-
-•	Issue assigned seating tickets
-
-•	Purchase assigned seating tickets from event creator
-
-•	Include assigned seating issuances to list of events created by event creator
-
-•	Include assigned seating tickets to buyers’ ticket wallets
-
-Phase 5: Event creator maintenance of assigned seating ticket offerings
-
-•	Update event creator maintenance to include assigned seating issuances
-
-Phase 6: Secondary market for assigned seating tickets
-
-•	Modify issuance of assigned seating tickets to include secondary market parameters
-
-•	Include assigned seating issuances to secondary market
