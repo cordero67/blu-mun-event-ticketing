@@ -108,6 +108,53 @@
   outline: none;
 }
 
+.ButtonGreenOpac {
+  height: 40px;
+  width: 500px;
+  background-color: #00a300;
+  opacity: 0.3;
+  color: white;
+  border: 1px solid black;
+  font-weight: 500;
+  font-size: 20px;
+  outline: none;
+}
+
+.ButtonRedSmall {
+  height: 40px;
+  width: 350px;
+  background-color: red;
+  color: #fff;
+  border: 1px solid black;
+  font-weight: 500;
+  font-size: 20px;
+  outline: none;
+}
+.ButtonRedSmall:hover {
+  background-color: #007a00;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+.ButtonRedSmall:active {
+  background-color: #005200;
+  color: #fff;
+  border: 1px solid black;
+  outline: none;
+}
+
+.ButtonRedSmallOpac {
+  height: 40px;
+  width: 350px;
+  background-color: #00a300;
+  opacity: 0.3;
+  color: white;
+  border: 1px solid black;
+  font-weight: 500;
+  font-size: 20px;
+  outline: none;
+}
+
 .ButtonGreenSmall {
   height: 40px;
   width: 350px;
@@ -130,19 +177,6 @@
   border: 1px solid black;
   outline: none;
 }
-
-.ButtonGreenOpac {
-  height: 40px;
-  width: 500px;
-  background-color: #00a300;
-  opacity: 0.3;
-  color: white;
-  border: 1px solid black;
-  font-weight: 500;
-  font-size: 20px;
-  outline: none;
-}
-
 
 .ButtonGreenSmallOpac {
   height: 40px;
@@ -202,13 +236,24 @@
   outline: none;
 }
 
+.ButtonBlueSmallOpac {
+  height: 40px;
+  width: 350px;
+  background-color: #0000f5;
+  opacity: 0.3;
+  color: white;
+  border: 1px solid black;
+  font-weight: 500;
+  font-size: 20px;
+  outline: none;
+}
+
 .Modal {
   font-family: "Roboto", sans-serif;
   position: fixed;
   z-index: 700;
   background-color: white;
   width: 600px;
-  height: 450px;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px black;
   padding: 25px 15px;

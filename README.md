@@ -8,13 +8,13 @@ The Blü Mün Event Ticketing DApp will be released in several phases (see "Blü
 
 __Phase 1 of the DApp has been completed as is intended for submission as the final project for the 2021 Consensys Blockchain Developer Bootcamp. Phase 1 consists of four different user screens.__
 
-*	Issue Tickets: User can generate a general admission ticket offering
+*	__Issue Tickets:__ User can generate a general admission ticket offering
 
-*	All Events: User can purchase general admission tickets
+*	__All Events:__ User can purchase general admission tickets
 
-*	My Events: User is provided a list of all the general admission ticket offerings they have created
+*	__My Events:__ User is provided a list of all the general admission ticket offerings they have created
 
-*	My Ticket Wallet: User is provided a list of all the tickets they have purchased. User can also transfer a ticket(s) to another user.
+*	__My Ticket Wallet:__ User is provided a list of all the tickets they have purchased. User can also transfer a ticket(s) to another user.
 
 The Blü Mün Event Ticketing DApp can be accessed at
 
@@ -85,7 +85,7 @@ Tests are set to run on port 7545. To compile, migrate and test using port 8545 
 
 * 	In a terminal window, type “ganache-cli”
 
-* 	In a terminal window, type “truffle test”
+* 	In a separate terminal window, type “truffle test”
 
 
 ## User Interaction
