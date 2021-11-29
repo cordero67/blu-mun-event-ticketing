@@ -41,19 +41,19 @@ Key folders/files of the project are located in the project’s root directory:
 
 ######    Contains files that support and generate the front-end interface:
 
-#####        > abis
+#####        > src/abis
 
             Houses the abis for each smart contract the was compiled and migrated.
 
-####        > components
+####        > src/components
 
             Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
 
-####        > contracts
+####        > sbc/contracts
 
             Houses the all smart contract files written in Solidity.
 
-#####    > test
+##### > test
 
 ######        Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
 
