@@ -12,7 +12,7 @@ import classes from "./App.module.css";
 class App extends Component {
   state = {
     isLoading: true,
-    display: "myTickets", // events, create, myEvents, myTickets, exchange3
+    display: "events", // events, create, myEvents, myTickets, exchange3
     modal: "none", // none, buy, create, modify, transfer
     modalSpinner: false,
     transactionSuccess: "none", // none, success, failure

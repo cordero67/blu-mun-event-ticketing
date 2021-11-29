@@ -1,4 +1,6 @@
-Project Overview
+# Blü Mün Event Ticketing DApp
+
+## Project Overview
 
 Blü Mün Event Ticketing is a blockchain based ticketing solution that allows event creators to issue tickets to an event and subsequently maintain complete control over its entire journey, i.e. both the primary and secondary markets.
 
@@ -17,9 +19,7 @@ Phase 1 of the DApp has been completed as is intended for submission as the fina
 The Blü Mün Event Ticketing DApp can be accessed at
 
 
-Directory Structure
-
-
+## Directory Structure
 
 Key folders/files of the project are located in the project’s root directory:
 
@@ -73,7 +73,7 @@ truffle-config.js
 
     Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
 
-DApp Compilation, Migration and Testing
+## DApp Compilation, Migration and Testing
 
 This project was compiled, migrated and tested using Truffle.
 
@@ -85,7 +85,7 @@ To recreate, perform the following:
 
 This performs the following:
 
-Compiles all .sol files identified by a migrations script (migrations folder of project root directory: ”src.migrations”). This will also generate a “.json” file for each compiled contract that contains the associated contract’s abi.
+Compiles all .sol files identified by a migrations script (migrations folder of project root directory: ”src.migrations”). This will also generate a “.json” file for each compiled contract that contains the associated contract’s abi and places them in the “src.abis” folder.
 
 Migrates all .sol files to the designated blockchain and augments “networks” field inside each “.json” files generated during the preceding compilation step.
 
@@ -99,10 +99,10 @@ Tests are set to run on port 7545. To compile, migrate and test using port 8545 
 •	In a terminal window, type “truffle test”
 
 
-User Interaction
+## User Interaction
 
 
-Blü Mün Event Ticketing DApp
+## Blü Mün Event Ticketing DApp
 
 Upon completion of all outlined phases, the Blü Mün Event Ticketing DApp will allow event creators to:
 
@@ -127,7 +127,7 @@ Ticket buyers would benefit from the following:
 •	Transfer tickets to friends zero cost
 
 
-Current and projected future state of US Event Ticketing Sales
+## Current and projected future state of US Event Ticketing Sales
 
 At the start of 2021 the market size, as measured by revenue, of the US Event Ticket Sales (“US ETS”) industry was $6.3bn with an annualized projected growth rate of 14.7%. Even though the industry has been hurt by the recent pandemic, its long-term market size is estimated to increase even when adjusted for inflation. However, while future annual projected growth rates are expected to remain positive, it is doubtful that the 2021 projected growth rate will be maintained as a good portion of the 2021 figure is a result of the US population’s pent-up demand for live activities that were significantly limited due to the pandemic.
 
@@ -138,12 +138,12 @@ Additionally, the evolution of spending patterns for key demographic groups in t
 Currently, the 25-29 and 30-35 age groups in the US represent the two largest in the US. As the natural level of disposable incomes of individuals in these age groups grow through their lifetime, independent of economic events, the amount spent on live events is expected to increase. Furthermore, should the trend of spending more disposable on live experience related items continue, the very long-term strength of the industry remains positive.
 
 
-Problems with Event Ticketing
+## Problems with Event Ticketing
 
 The biggest problem with event ticketing is the secondary market, where tickets purchased on the primary market are resold at any price by middle-men such as touts, scalpers and would-be attendees. Secondary markets are where the bulk of industry fraud arises, since these markets are unregulated and are ridden with counterfeits, tickets that have been already used or sold, or tickets that have been bulk-bought in primary markets and re-listed at sky-high prices in secondary markets. It should be noted that event organizers currently have no control or right to revenue in the secondary markets, and that these secondary markets extend through to black markets at the door of events where middle-men re-sell printed tickets to hopeful attendees. On top of this, secondary market platforms can charge the buyer up to a 10% fee on ticket purchases. In aggregate, the final ticket purchaser can end up paying a final price that is multiple times its original price, with the difference being completely absorbed by middle-men and secondary market ticketing platforms.
 
 
-The Blockchain Solution
+## The Blockchain Solution
 
 It is believed that blockchain technology can help mitigate some of these problems by offering on-chain ticketing sales that extends through the entire life of a ticket’s journey; from the primary to the secondary markets, through to the final attendance of the associated event.
 
@@ -154,7 +154,7 @@ Additionally, the immutability of the blockchain would help protect would be buy
 Moreover, blockchain issuance can allow event creators to receive revenues from ticket sales instantly unlike most current online ticket sellers. This proves most beneficial should the event creator either need such revenues to help pay for the event or need to provide an instance refund should the event be cancelled. This situation was prominent during the recent pandemic where ticketing platforms that hold ticket revenues until the completion of event, where not able to refund ticket holders, leaving event creators unable to correct the situation.
 
 
-Blü Mün Event Ticketing DApp Construction
+## Blü Mün Event Ticketing DApp Construction
 
 Blü Mün Event Ticketing DApp will be released in several phases:
 
