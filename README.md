@@ -73,6 +73,32 @@ truffle-config.js
 
     Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
 
+DApp Compilation, Migration and Testing
+
+This project was compiled, migrated and tested using Truffle.
+
+To recreate, perform the following:
+
+•	Open up a local copy of Ganache-GUI
+
+•	In a terminal window, type “truffle test”
+
+This performs the following:
+
+Compiles all .sol files identified by a migrations script (migrations folder of project root directory: ”src.migrations”). This will also generate a “.json” file for each compiled contract that contains the associated contract’s abi.
+
+Migrates all .sol files to the designated blockchain and augments “networks” field inside each “.json” files generated during the preceding compilation step.
+
+Executes the “EventTicketFactory.js” file which contains all the associated tests of both the “GAEventTickets" and "EventTicketingFactory" smart contracts.
+Tests are set to run on port 7545. To compile, migrate and test using port 8545 (i.e. ganache-cli), perform the following:
+
+•	Comment out line 24 and uncomment line 25 in the truffle-config.js file.
+
+•	In a terminal window, type “ganache-cli”
+
+•	In a terminal window, type “truffle test”
+
+
 User Interaction
 
 
