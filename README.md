@@ -23,7 +23,7 @@ The Blü Mün Event Ticketing DApp can be accessed at
 
 Key folders/files of the project are located in the project’s root directory:
 
-> Consensys Project Documents
+### > Consensys Project Documents
 
     Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
 
@@ -33,7 +33,7 @@ Key folders/files of the project are located in the project’s root directory:
 
         design_pattern_decisions.md
 
-> migrations
+### migrations
 
     Contains truffle migration scripts.
 
