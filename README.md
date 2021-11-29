@@ -23,55 +23,55 @@ Directory Structure
 
 Key folders/files of the project are located in the project’s root directory:
 
-    > Consensys Project Documents
+> Consensys Project Documents
 
-        Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
+    Contains description files for the 2021 Consensys Blockchain Developer Bootcamp project submission:
 
-            avoiding_common_attacks.md
+        avoiding_common_attacks.md
 
-            deployed_address.txt
+        deployed_address.txt
 
-            design_pattern_decisions.md
+        design_pattern_decisions.md
 
-    > migrations
+> migrations
 
-        Contains truffle migration scripts.
+    Contains truffle migration scripts.
 
-    > src
+> src
 
-        Contains files that support and generate the front-end interface:
+    Contains files that support and generate the front-end interface:
 
-            > abis
+        > abis
 
-                Houses the abis for each smart contract the was compiled and migrated.
+            Houses the abis for each smart contract the was compiled and migrated.
 
-            > components
+        > components
 
-                Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
+            Houses all files necessary to support the user interface and specifically the App.js file which contains a majority of the working code.
 
-            > contracts
+        > contracts
 
-                Houses the all smart contract files written in Solidity.
+            Houses the all smart contract files written in Solidity.
 
-        > test
+    > test
 
-            Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
+        Contains the EventTicketFactory.test.js file which includes 18 different tests of the EventTicketingFactory and GAEventTickets smart contracts.
 
-    package-lock.json
+package-lock.json
 
-        Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
+    Contains package-lock. json a list of all modifications (subsequent installs) the npm made to the node_modules tree, or package. json.
 
-    package.json
+package.json
 
-        Contains a list of all dependencies.
+    Contains a list of all dependencies.
 
-    README.md
+README.md
 
-        Contains a description of the project.
+    Contains a description of the project.
 
-    truffle-config.js
+truffle-config.js
 
-        Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
+    Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
 
 User Interaction
 
@@ -132,46 +132,46 @@ Blü Mün Event Ticketing DApp Construction
 
 Blü Mün Event Ticketing DApp will be released in several phases:
 
-    Phase 1: General admission tickets primary market issuance (ERC-20 contracts)
+Phase 1: General admission tickets primary market issuance (ERC-20 contracts)
 
-    •	Issue general admission tickets
+•	Issue general admission tickets
 
-    •	Purchase general admission tickets from event creator
+•	Purchase general admission tickets from event creator
 
-    •	Generate a list of events created by event creator
+•	Generate a list of events created by event creator
 
-    •	Generate a ticket wallet for a given ticket buyer
+•	Generate a ticket wallet for a given ticket buyer
 
-    Phase 2: Event creator maintenance of general admission ticket offerings
+Phase 2: Event creator maintenance of general admission ticket offerings
 
-    •	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
+•	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
 
-    •	Modify the state of primary ticket sales, e.g. for sale, paused, completed
+•	Modify the state of primary ticket sales, e.g. for sale, paused, completed
 
-    •	Refund ticket buyer(s)
+•	Refund ticket buyer(s)
 
-    Phase 3: Secondary market for general admission tickets
+Phase 3: Secondary market for general admission tickets
 
-    •	Modify issuance of general admission tickets to include secondary market parameters
+•	Modify issuance of general admission tickets to include secondary market parameters
 
-    •	Create a secondary market where general admission tickets can be bought and sold
+•	Create a secondary market where general admission tickets can be bought and sold
 
-    Phase 4: Assigned seating tickets primary market issuance (ERC-721 and ER-1155 contracts)
+Phase 4: Assigned seating tickets primary market issuance (ERC-721 and ER-1155 contracts)
 
-    •	Issue assigned seating tickets
+•	Issue assigned seating tickets
 
-    •	Purchase assigned seating tickets from event creator
+•	Purchase assigned seating tickets from event creator
 
-    •	Include assigned seating issuances to list of events created by event creator
+•	Include assigned seating issuances to list of events created by event creator
 
-    •	Include assigned seating tickets to buyers’ ticket wallets
+•	Include assigned seating tickets to buyers’ ticket wallets
 
-    Phase 5: Event creator maintenance of assigned seating ticket offerings
+Phase 5: Event creator maintenance of assigned seating ticket offerings
 
-    •	Update event creator maintenance to include assigned seating issuances
+•	Update event creator maintenance to include assigned seating issuances
 
-    Phase 6: Secondary market for assigned seating tickets
+Phase 6: Secondary market for assigned seating tickets
 
-    •	Modify issuance of assigned seating tickets to include secondary market parameters
+•	Modify issuance of assigned seating tickets to include secondary market parameters
 
-    •	Include assigned seating issuances to secondary market
+•	Include assigned seating issuances to secondary market
