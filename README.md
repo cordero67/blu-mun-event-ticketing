@@ -8,13 +8,13 @@ The Blü Mün Event Ticketing DApp will be released in several phases (see "Blü
 
 Phase 1 of the DApp has been completed as is intended for submission as the final project for the 2021 Consensys Blockchain Developer Bootcamp. Phase 1 consists of four different user screens.
 
-•	Issue general admission tickets
+*	Issue general admission tickets
 
-•	Purchase general admission tickets from event creator
+*	Purchase general admission tickets from event creator
 
-•	Generate a list of events created by a given event creator
+*	Generate a list of events created by a given event creator
 
-•	Generate a ticket wallet for a given ticket buyer
+*	Generate a ticket wallet for a given ticket buyer
 
 The Blü Mün Event Ticketing DApp can be accessed at
 
@@ -79,9 +79,9 @@ This project was compiled, migrated and tested using Truffle.
 
 To recreate, perform the following:
 
-•	Open up a local copy of Ganache-GUI
+*	Open up a local copy of Ganache-GUI
 
-•	In a terminal window, type “truffle test”
+*	In a terminal window, type “truffle test”
 
 This performs the following:
 
@@ -128,72 +128,72 @@ Blü Mün Event Ticketing DApp will be released in several phases:
 
 Phase 1: General admission tickets primary market issuance (ERC-20 contracts)
 
-•	Issue general admission tickets
+*	Issue general admission tickets
 
-•	Purchase general admission tickets from event creator
+*	Purchase general admission tickets from event creator
 
-•	Generate a list of events created by event creator
+*	Generate a list of events created by event creator
 
-•	Generate a ticket wallet for a given ticket buyer
+*	Generate a ticket wallet for a given ticket buyer
 
 Phase 2: Event creator maintenance of general admission ticket offerings
 
-•	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
+*	Ability to change parameters of ticket offering, e.g. ticket price, tickets available
 
-•	Modify the state of primary ticket sales, e.g. for sale, paused, completed
+*	Modify the state of primary ticket sales, e.g. for sale, paused, completed
 
-•	Refund ticket buyer(s)
+*	Refund ticket buyer(s)
 
 Phase 3: Secondary market for general admission tickets
 
-•	Modify issuance of general admission tickets to include secondary market parameters
+*	Modify issuance of general admission tickets to include secondary market parameters
 
-•	Create a secondary market where general admission tickets can be bought and sold
+*	Create a secondary market where general admission tickets can be bought and sold
 
 Phase 4: Assigned seating tickets primary market issuance (ERC-721 and ER-1155 contracts)
 
-•	Issue assigned seating tickets
+*	Issue assigned seating tickets
 
-•	Purchase assigned seating tickets from event creator
+*	Purchase assigned seating tickets from event creator
 
-•	Include assigned seating issuances to list of events created by event creator
+*	Include assigned seating issuances to list of events created by event creator
 
-•	Include assigned seating tickets to buyers’ ticket wallets
+*	Include assigned seating tickets to buyers’ ticket wallets
 
 Phase 5: Event creator maintenance of assigned seating ticket offerings
 
-•	Update event creator maintenance to include assigned seating issuances
+*	Update event creator maintenance to include assigned seating issuances
 
 Phase 6: Secondary market for assigned seating tickets
 
-•	Modify issuance of assigned seating tickets to include secondary market parameters
+*	Modify issuance of assigned seating tickets to include secondary market parameters
 
-•	Include assigned seating issuances to secondary market
+*	Include assigned seating issuances to secondary market
 
 
 ## Blü Mün Event Ticketing DApp
 
 Upon completion of all outlined phases, the Blü Mün Event Ticketing DApp will allow event creators to:
 
-•	Issue crypto tickets to events and post these events online
+*	Issue crypto tickets to events and post these events online
 
-•	Sell tickets and instantly receive the associated revenues
+*	Sell tickets and instantly receive the associated revenues
 
-•	Modify the parameters associated with initial ticket, e.g. price and quantity
+*	Modify the parameters associated with initial ticket, e.g. price and quantity
 
-•	Control the tickets’ secondary market sales, e.g. maximum resale price, profit sharing
+*	Control the tickets’ secondary market sales, e.g. maximum resale price, profit sharing
 
-•	Issue instant refunds to ticket holders
+*	Issue instant refunds to ticket holders
 
-•	Maintain complete knowledge of each ticket sold, e.g. current ticket buyer, sales price
+*	Maintain complete knowledge of each ticket sold, e.g. current ticket buyer, sales price
 
 Ticket buyers would benefit from the following:
 
-•	Eliminate the risk of buying a fraudulent ticket(s)
+*	Eliminate the risk of buying a fraudulent ticket(s)
 
-•	Potential to not pay exorbitant ticket prices on secondary ticket sales
+*	Potential to not pay exorbitant ticket prices on secondary ticket sales
 
-•	Transfer tickets to friends zero cost
+*	Transfer tickets to friends zero cost
 
 
 ## Current and projected future state of US Event Ticketing Sales
