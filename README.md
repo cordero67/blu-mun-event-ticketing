@@ -20,7 +20,9 @@ The Blü Mün Event Ticketing DApp can be accessed at
 
 ## Public Deployment
 
-https://61a61cd9ba939d0008a8fb83--focused-poincare-435243.netlify.app/
+The application is publically avaialable at the following url:
+
+https://61a66073c51a56000759ffb5--focused-poincare-435243.netlify.app/
 
 ## Directory Structure
 
