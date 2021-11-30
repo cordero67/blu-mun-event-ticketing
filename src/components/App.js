@@ -383,7 +383,7 @@ class App extends Component {
                   <hr style={{width: "100%", backgroundColor: "#666"}}/>
               </div>
               );
-            }
+            } else return null;
           })}
         </Fragment>
       );
@@ -1481,7 +1481,7 @@ class App extends Component {
   }
 
   createModalBody = () => {
-    const { web3, accounts, factory, newEvent } = this.state;
+    const { accounts, factory, newEvent } = this.state;
     if(this.state.modalSpinner) {
       return (
         <Fragment>
@@ -1522,9 +1522,9 @@ class App extends Component {
                 let tempEvent = {...this.state.newEvent};
 
                 // use "web3" instance to get user accounts associated with given provider
-                const accounts = await web3.eth.getAccounts();
-                this.setState({ accounts: accounts });
-                console.log("Accounts: ", this.state.accounts);
+                //const accounts = await web3.eth.getAccounts();
+                //this.setState({ accounts: accounts });
+                //console.log("Accounts: ", this.state.accounts);
 
                 try {
                   // launches a GATicket event
