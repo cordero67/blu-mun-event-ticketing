@@ -18,6 +18,9 @@ __Phase 1 of the DApp has been completed as is intended for submission as the fi
 
 The Blü Mün Event Ticketing DApp can be accessed at
 
+## Public Deployment
+
+https://61a61cd9ba939d0008a8fb83--focused-poincare-435243.netlify.app/
 
 ## Directory Structure
 
@@ -61,6 +64,12 @@ Key folders/files of the project are located in the project’s root directory:
 
 #### truffle-config.js
 #####    Contains the truffle-config.js file that houses information allowing truffle to compile, migrate and test the project and its deployment.
+
+## Project Dependencies
+
+A full list of project dependencies are located in the "package.json" file of this repositoy:
+
+https://github.com/cordero67/blockchain-developer-bootcamp-final-project/blob/main/package.json
 
 ## DApp Compilation, Migration and Testing
 

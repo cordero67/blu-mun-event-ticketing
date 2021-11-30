@@ -12,7 +12,8 @@ import classes from "./App.module.css";
 class App extends Component {
   state = {
     isLoading: true,
-    display: "events", // events, create, myEvents, myTickets, exchange3
+    display: "events", // events, create, myEvents, myTickets, exchange, presentation
+    presentationDisplay: 0,
     modal: "none", // none, buy, create, modify, transfer
     modalSpinner: false,
     transactionSuccess: "none", // none, success, failure
@@ -967,7 +968,7 @@ class App extends Component {
           alt="No logo available"
           onerror="onerror=null;src='../../assets/Get_Your_Tickets.png'"
           onClick={() => {
-            this.changeDisplay("all");
+            this.changeDisplay("presentation");
           }}
         />
       </div>
@@ -1051,17 +1052,22 @@ class App extends Component {
           Who are you?
         </div>
       );
-    } else {
+    } else if (this.state.display !== "presentation") {
       return (
         <div className={classes.AccountHeader}>
           Hello account: {this.state.accounts[0]}
         </div>
       );
+    } else {
+      return (
+        <div className={classes.AccountHeader}>
+        </div>
+      )
     }
   };
 
   issueTicketsDisplay = () => {
-    if(this.state.display === "create" || this.state.display === "all") {
+    if(this.state.display === "create") {
       return (
         <div className={classes.PageDisplay}>
           <div className={classes.PageTitle}>
@@ -1083,8 +1089,136 @@ class App extends Component {
     } else return null
   }
 
+  presentationDisplay = () => {
+    if(this.state.display === "presentation") {
+      return (
+        <div className={classes.PageDisplay}>
+          <div
+            style={{
+              paddingTop: "30px",
+              paddingRight: "40px",
+              paddingBottom: "30px", 
+              paddingLeft: "40px"
+            }}
+          >
+            <div
+              style={{
+                paddingTop: "10px",
+                listStyleType: "none",
+                fontSize: "36px",
+                fontWeight: "600",
+                textAlign: "center",
+                color: "#4792F7", //#76AFF9
+              }}
+              onClick={() => {
+                console.log("New screen")
+                if (parseInt(this.state.presentationDisplay) === 19) {
+                  this.setState({presentationDisplay: 0});
+                } else {
+                this.setState({presentationDisplay: parseInt(this.state.presentationDisplay) + 1});}
+                console.log("presentation display: ", this.state.presentationDisplay);
+              }}
+            >
+              Blü Mün Event Tickets
+            </div>
+
+            {this.state.presentationDisplay > 0 ? (
+              <div
+                style={{
+                  paddingTop: "40px",
+                  listStyleType: "none",
+                  fontSize: "28px",
+                  fontWeight: "600",
+                  textAlign: "center",
+                  color: "#0000FF",
+              }}>A blockchain based ticketing application</div>) :
+              null
+            }
+
+            {this.state.presentationDisplay > 1 && this.state.presentationDisplay < 4 ? (<div style={{paddingTop: "40px", 
+                  fontSize: "28px", textAlign: "center"}}>
+              Allows event creators to issue tickets and maintain complete control over its entire journey.
+            </div>) : null}
+
+            {this.state.presentationDisplay > 2  && this.state.presentationDisplay < 4 ? (<div style={{paddingTop: "40px", 
+                  fontSize: "28px", textAlign: "center"}}>
+              Both the primary and secondary markets.
+            </div>) : null}
+
+            {this.state.presentationDisplay > 3 && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "40px",
+                  fontSize: "28px", textAlign: "center"}}>
+              Why Blockchain?
+            </div>) : null}
+
+            {this.state.presentationDisplay > 4 && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "40px", paddingLeft: "750px", 
+                  fontSize: "24px", textAlign: "left"}}>
+              Benefits for Event Creators.
+            </div>) : null}
+
+            {this.state.presentationDisplay > 5  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "800px", 
+                  fontSize: "24px", textAlign: "left"}}>
+              to mitigate the act of ticket scalping
+            </div>) : null}
+
+            {this.state.presentationDisplay > 6  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "800px", 
+                  fontSize: "24px", textAlign: "left"}}>
+              participate in any price markup realized in the secondary market
+            </div>) : null}
+
+            {this.state.presentationDisplay > 7 && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "80px", paddingLeft: "750px", 
+                  fontSize: "24px", textAlign: "left"}}>
+              Benefits for Ticket Buyers.
+            </div>) : null}
+
+            {this.state.presentationDisplay > 8  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "800px", 
+                  fontSize: "24px", textAlign: "left"}}>
+              eliminate any secondary market fees
+            </div>) : null}
+
+            {this.state.presentationDisplay > 9  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "800px", 
+                  fontSize: "24px", textAlign: "left"}}>
+              potentially reduced secondary market ticket prices
+            </div>) : null}
+
+            {this.state.presentationDisplay > 10 && this.state.presentationDisplay < 20 ? (<div style={{paddingTop: "40px",
+                  fontSize: "28px", textAlign: "center"}}>
+              Application overview
+            </div>) : null}
+
+            {this.state.presentationDisplay > 10 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "750px"}}>
+              Final application will allow event creators to:</div>) : null}
+            
+            {this.state.presentationDisplay > 11 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "800px"}}>
+              issue, sell and manage general admission tickets (fungible ERC20)</div>) : null}
+            
+            {this.state.presentationDisplay > 12 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "800px"}}>
+              issue, sell and manage assigned seating tickets (non-fungible ERC721)</div>) : null}
+            
+            {this.state.presentationDisplay > 13 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "800px"}}>
+              control the parameters around the reselling of tickets purchased</div>) : null}
+
+            {this.state.presentationDisplay > 14 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "750px"}}>
+              Phase 1 consists of four different user screens:</div>) : null}
+
+            {this.state.presentationDisplay > 15 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "800px"}}>
+              Issue Tickets: Event creator can generate a general admission ticket offering</div>) : null}
+
+            {this.state.presentationDisplay > 16 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "800px"}}>
+              All Events: Ticket buyer can purchase general admission tickets</div>) : null}
+
+            {this.state.presentationDisplay > 17 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "800px"}}>
+              My Events: Event creator is provided a list of all ticket offerings they have created</div>) : null}
+              
+            {this.state.presentationDisplay > 18 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "800px"}}>
+              My Ticket Wallet: Ticket buyer is provided a list of all the tickets they have purchased</div>) : null}
+          </div>
+        </div>
+      )
+    } else return null
+  }
+
   eventsDisplay = () => {
-    if(this.state.display === "events" || this.state.display === "all") {
+    if(this.state.display === "events") {
       return (
         <div className={classes.PageDisplay}>
           <div className={classes.PageTitle}>
@@ -1108,7 +1242,7 @@ class App extends Component {
   }
 
   exchangeDisplay = () => {
-    if(this.state.display === "exchange" || this.state.display === "all") {
+    if(this.state.display === "exchange") {
       return (
         <div className={classes.PageDisplay}>
           <div className={classes.PageTitle}>
@@ -1121,7 +1255,7 @@ class App extends Component {
   }
 
   myTicketsDisplay = () => {
-    if(this.state.display === "myTickets" || this.state.display === "all") {
+    if(this.state.display === "myTickets") {
       return (
         <div className={classes.PageDisplay}>
           <div className={classes.PageTitle}>
@@ -1141,7 +1275,7 @@ class App extends Component {
   }
 
   myEventsDisplay = () => {
-    if(this.state.display === "myEvents" || this.state.display === "all") {
+    if(this.state.display === "myEvents") {
       return (
         <div className={classes.PageDisplay}>
           <div className={classes.PageTitle}>
@@ -1704,6 +1838,7 @@ class App extends Component {
         <div>{this.orderModal()}</div>
         <div>{this.transferModal()}</div>
         <div className={classes.MainDisplay}>
+          {this.presentationDisplay()}
           {this.eventsDisplay()}
           {this.issueTicketsDisplay()}
           {this.myEventsDisplay()}
