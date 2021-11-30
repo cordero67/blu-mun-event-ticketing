@@ -1070,7 +1070,7 @@ class App extends Component {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "700px 700px 700px",
+              gridTemplateColumns: "580px 580px 580px",
               columnGap: "20px"
             }}
           >
