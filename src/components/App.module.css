@@ -1,6 +1,6 @@
 .HeaderItem {
   font-size: 16px;
-  padding-top: 25px;
+  padding-top: 30px;
   list-style-type: none;
   color: #F0AE00;
   cursor: pointer;
@@ -11,7 +11,7 @@
 
 .HeaderItemSelected {
   font-size: 16px;
-  padding-top: 25px;
+  padding-top: 30px;
   list-style-type: none;
   color: #F0AE00;
   cursor: pointer;

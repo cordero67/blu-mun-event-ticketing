@@ -239,7 +239,7 @@ class App extends Component {
     const { isLoading, gaTicketDetails } = this.state;
 
     if (isLoading) {
-      return <div style={{fontSize: "26px"}}>Loading information...</div>;
+      return <div style={{fontSize: "22px"}}>Loading information...</div>;
     } else if (!(gaTicketDetails.length === 0)) {
       return (
         <Fragment>
@@ -298,7 +298,7 @@ class App extends Component {
         >
           <div
             style={{
-              fontSize: "26px",
+              fontSize: "22px",
               fontWeight: "600",
               color: "rblack",
             }}
@@ -325,7 +325,7 @@ class App extends Component {
   myEventsList = () => {
     const { gaTicketDetails, myEvents } = this.state;
     if (this.state.isLoading) {
-      return <div style={{fontSize: "26px"}}>Loading information...</div>;
+      return <div style={{fontSize: "22px"}}>Loading information...</div>;
     } else if (!(myEvents.length === 0)) {
       return (
         <Fragment>
@@ -349,7 +349,7 @@ class App extends Component {
                     style={{display: "grid", 
                       gridTemplateColumns: "280px 300px",
                       columnGap: "5px",
-                      fontSize: "20px"
+                      fontSize: "16px"
                     }}
                   >
                     <div style={{textAlign: "right"}}>Initial Ticket Issuance:</div>
@@ -398,7 +398,7 @@ class App extends Component {
         >
           <div
             style={{
-              fontSize: "26px",
+              fontSize: "22px",
               fontWeight: "600",
               color: "rblack",
             }}
@@ -470,7 +470,7 @@ class App extends Component {
         >
           <div
             style={{
-              fontSize: "26px",
+              fontSize: "22px",
               fontWeight: "600",
               color: "rblack",
             }}
@@ -616,7 +616,7 @@ class App extends Component {
         style={{
           paddingLeft: "10px",
           height: "14px",
-          fontSize: "12px",
+          fontSize: "10px",
           color: "red",
           fontWeight: "700",
         }}
@@ -633,7 +633,7 @@ class App extends Component {
           style={{
             paddingLeft: "10px",
             height: "14px",
-            fontSize: "12px",
+            fontSize: "10px",
             color: "red",
             fontWeight: "700",
           }}
@@ -647,7 +647,7 @@ class App extends Component {
           style={{
             paddingLeft: "10px",
             height: "14px",
-            fontSize: "12px",
+            fontSize: "10px",
             color: "red",
           }}
         >
@@ -660,7 +660,7 @@ class App extends Component {
           style={{
             paddingLeft: "10px",
             height: "14px",
-            fontSize: "12px",
+            fontSize: "10px",
             color: "black",
           }}
         >
@@ -673,7 +673,7 @@ class App extends Component {
           style={{
             paddingLeft: "10px",
             height: "14px",
-            fontSize: "12px",
+            fontSize: "10px",
             color: "black",
           }}
         >
@@ -930,7 +930,7 @@ class App extends Component {
         <div
           style={{
             paddingBottom: "10px",
-            fontSize: "26px",
+            fontSize: "22px",
             fontWeight: "600",
             color: "red",
           }}
@@ -1175,9 +1175,9 @@ class App extends Component {
     if(this.state.modalSpinner) {
      return (
         <Fragment>
-          <div style={{fontSize: "24px", paddingTop: "60px"}}>Your tickets are being transferred</div>
+          <div style={{fontSize: "20px", paddingTop: "60px"}}>Your tickets are being transferred</div>
           <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
-          <div style={{fontSize: "24px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
+          <div style={{fontSize: "20px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
         </Fragment>
       )
     } else if (this.state.transactionSuccess === "none") {
@@ -1192,14 +1192,14 @@ class App extends Component {
               columnGap: "2%"
             }}>
               <div style={{textAlign: "right"}}>
-                <div style={{fontSize: "18px"}}>Ticket Symbol:</div>
-                <div style={{fontSize: "18px"}}>Tickets Owned:</div>
-                <div style={{fontSize: "18px"}}>Ticket Price:</div>
+                <div style={{fontSize: "16px"}}>Ticket Symbol:</div>
+                <div style={{fontSize: "16px"}}>Tickets Owned:</div>
+                <div style={{fontSize: "16px"}}>Ticket Price:</div>
               </div>
               <div style={{textAlign: "left"}}>
-            <div style={{fontSize: "18px"}}>{transferOrder.symbol}</div>
-            <div style={{fontSize: "18px"}}>{transferOrder.amount}</div>
-            <div style={{fontSize: "18px"}}>{transferOrder.price} wei</div>
+            <div style={{fontSize: "16px"}}>{transferOrder.symbol}</div>
+            <div style={{fontSize: "16px"}}>{transferOrder.amount}</div>
+            <div style={{fontSize: "16px"}}>{transferOrder.price} wei</div>
               </div>
           </div>
           <div
@@ -1209,8 +1209,8 @@ class App extends Component {
               columnGap: "2%",
               paddingTop: "15px"
             }}>
-            <div style={{fontSize: "24px", textAlign: "right", paddingTop: "8px"}}># Tickets to Transfer</div>
-            <div style={{fontSize: "24px", textAlign: "left"}}>
+            <div style={{fontSize: "20px", textAlign: "right", paddingTop: "8px"}}># Tickets to Transfer</div>
+            <div style={{fontSize: "20px", textAlign: "left"}}>
               <select
                 style={{
                   padding: "9px 5px",
@@ -1312,7 +1312,7 @@ class App extends Component {
       ) 
     } else if (this.state.transactionSuccess === "failure") {
       return (
-        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your tickets were not transferred
+        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your tickets were not transferred
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
@@ -1324,7 +1324,7 @@ class App extends Component {
       )
     } else {
       return (
-        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
+        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
@@ -1354,16 +1354,16 @@ class App extends Component {
     if(this.state.modalSpinner) {
       return (
         <Fragment>
-          <div style={{fontSize: "24px", paddingTop: "60px"}}>Your order is being processed</div>
+          <div style={{fontSize: "20px", paddingTop: "60px"}}>Your order is being processed</div>
           <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
-          <div style={{fontSize: "24px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
+          <div style={{fontSize: "20px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
         </Fragment>
       )
     } else if (this.state.transactionSuccess === "none") {
       return (
         <Fragment>
           <div style={{fontSize: "34px"}}>Ticket Order</div>
-          <div style={{fontSize: "24px"}}>{newOrder.name}</div>
+          <div style={{fontSize: "20px"}}>{newOrder.name}</div>
           <div
             style={{
               display: "grid",
@@ -1371,14 +1371,14 @@ class App extends Component {
               columnGap: "2%"
             }}>
               <div style={{textAlign: "right"}}>
-                <div style={{fontSize: "18px"}}>Ticket Symbol:</div>
-                <div style={{fontSize: "18px"}}>Tickets Available:</div>
-                <div style={{fontSize: "18px"}}>Ticket Price:</div>
+                <div style={{fontSize: "16px"}}>Ticket Symbol:</div>
+                <div style={{fontSize: "16px"}}>Tickets Available:</div>
+                <div style={{fontSize: "16px"}}>Ticket Price:</div>
               </div>
               <div style={{textAlign: "left"}}>
-            <div style={{fontSize: "18px"}}>{newOrder.symbol}</div>
-            <div style={{fontSize: "18px"}}>{newOrder.available}</div>
-            <div style={{fontSize: "18px"}}>{newOrder.primaryPrice} wei</div>
+            <div style={{fontSize: "16px"}}>{newOrder.symbol}</div>
+            <div style={{fontSize: "16px"}}>{newOrder.available}</div>
+            <div style={{fontSize: "16px"}}>{newOrder.primaryPrice} wei</div>
               </div>
           </div>
           <div
@@ -1388,8 +1388,8 @@ class App extends Component {
               columnGap: "2%",
               paddingTop: "15px"
             }}>
-            <div style={{fontSize: "24px", textAlign: "right", paddingTop: "8px"}}>Select Ticket Quantity</div>
-            <div style={{fontSize: "24px", textAlign: "left"}}>
+            <div style={{fontSize: "20px", textAlign: "right", paddingTop: "8px"}}>Select Ticket Quantity</div>
+            <div style={{fontSize: "20px", textAlign: "left"}}>
               <select
                 style={{
                   padding: "9px 5px",
@@ -1411,8 +1411,8 @@ class App extends Component {
               >{ticketsArray.map(number => (<option>{number}</option>))}</select>
             </div>
             
-            <div style={{fontSize: "24px", textAlign: "right"}}>Purchase Amount:</div>
-            <div style={{fontSize: "24px", textAlign: "left"}}>{newOrder.quantity * newOrder.primaryPrice} wei</div>
+            <div style={{fontSize: "20px", textAlign: "right"}}>Purchase Amount:</div>
+            <div style={{fontSize: "20px", textAlign: "left"}}>{newOrder.quantity * newOrder.primaryPrice} wei</div>
           </div>
           <div style={{paddingTop: "20px"}}>
             <button
@@ -1452,7 +1452,7 @@ class App extends Component {
       ) 
     } else if (this.state.transactionSuccess === "failure") {
       return (
-        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was not successfull
+        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was not successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
@@ -1465,7 +1465,7 @@ class App extends Component {
       )
     } else {
       return (
-        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
+        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
@@ -1485,16 +1485,16 @@ class App extends Component {
     if(this.state.modalSpinner) {
       return (
         <Fragment>
-          <div style={{fontSize: "24px", paddingTop: "60px"}}>Your order is being processed</div>
+          <div style={{fontSize: "20px", paddingTop: "60px"}}>Your order is being processed</div>
           <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
-          <div style={{fontSize: "24px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
+          <div style={{fontSize: "20px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
         </Fragment>
       )
     } else if (this.state.transactionSuccess === "none") {
       return (
         <Fragment>
-          <div style={{fontSize: "34px"}}>GA Ticket Creation</div>
-          <div style={{fontSize: "30px"}}>{newEvent.name}</div>
+          <div style={{fontSize: "30px"}}>GA Ticket Creation</div>
+          <div style={{fontSize: "26px"}}>{newEvent.name}</div>
           <div
             style={{
               display: "grid",
@@ -1503,14 +1503,14 @@ class App extends Component {
               paddingTop: "5px"
             }}>
               <div style={{textAlign: "right"}}>
-                <div style={{fontSize: "24px"}}>Ticket Symbol:</div>
-                <div style={{fontSize: "24px"}}>Ticket Quantity:</div>
-                <div style={{fontSize: "24px"}}>Ticket Price:</div>
+                <div style={{fontSize: "20px"}}>Ticket Symbol:</div>
+                <div style={{fontSize: "20px"}}>Ticket Quantity:</div>
+                <div style={{fontSize: "20px"}}>Ticket Price:</div>
               </div>
               <div style={{textAlign: "left"}}>
-                <div style={{fontSize: "24px"}}>{newEvent.symbol}</div>
-                <div style={{fontSize: "24px"}}>{newEvent.initial}</div>
-                <div style={{fontSize: "24px"}}>{newEvent.price} wei</div>
+                <div style={{fontSize: "20px"}}>{newEvent.symbol}</div>
+                <div style={{fontSize: "20px"}}>{newEvent.initial}</div>
+                <div style={{fontSize: "20px"}}>{newEvent.price} wei</div>
               </div>
           </div>
           <div style={{paddingTop: "20px"}}>
@@ -1572,7 +1572,7 @@ class App extends Component {
       ) 
     } else if (this.state.transactionSuccess === "failure") {
       return (
-        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was not successfull
+        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was not successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
@@ -1601,7 +1601,7 @@ class App extends Component {
       )
     } else {
       return (
-        <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
+        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
