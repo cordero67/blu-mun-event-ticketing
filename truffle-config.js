@@ -2,14 +2,10 @@ require("babel-register");
 require("babel-polyfill");
 require("dotenv").config(); // injects all environment variables into the project
 
-const path = require("path");
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+
 const dotenv = require("dotenv");
 dotenv.config();
-const fs = require("fs");
-
-const mnemonic =
-  "menu muffin coin decrease way host suffer wrist lion time camera toward";
 
 const infuraURL =
   "https://rinkeby.infura.io/v3/aa94729499e0460aa0946d090baeb63b";
@@ -21,23 +17,17 @@ module.exports = {
 
     development: {
       host: "127.0.0.1",
-      port: 7545, // ganache-cli
-      //port: 8545, // ganache-gui
+      //port: 7545, // ganache-cli
+      port: 8545, // ganache-gui
       network_id: "*",
     },
 
     rinkeby: {
-      provider: () => new HDWalletProvider(mnemonic, infuraURL),
+      provider: () =>
+        new HDWalletProvider(process.env.METAMASK_MNEMONIC, infuraURL),
       network_id: 4,
       gas: 5500000,
     },
-    /*
-    rinkeby: {
-      provider: () => new HDWalletProvider(mnemonic, process.env.INFURA_URL),
-      network_id: "4",
-      gas: 5500000,
-    },
-    */
   },
 
   // places solidity files inside "./src/contracts/"

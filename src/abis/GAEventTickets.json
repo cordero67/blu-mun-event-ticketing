@@ -16203,7 +16203,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.23",
-  "updatedAt": "2021-11-30T01:57:36.308Z",
+  "updatedAt": "2021-11-30T22:30:42.436Z",
   "devdoc": {
     "author": "Rafael Cordero",
     "details": "Includes additional functionality that is not part of ERC20 standard",

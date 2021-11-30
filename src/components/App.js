@@ -112,6 +112,7 @@ class App extends Component {
   };
 
   retrieveEventData = async () => {
+    this.setState({ isLoading: true });
     const { factory, web3 } = this.state;
 
     this.setState({ gaTicketDetails: [], myEvents: [], myTickets: [] });
@@ -1112,7 +1113,7 @@ class App extends Component {
               }}
               onClick={() => {
                 console.log("New screen")
-                if (parseInt(this.state.presentationDisplay) === 19) {
+                if (parseInt(this.state.presentationDisplay) === 20) {
                   this.setState({presentationDisplay: 0});
                 } else {
                 this.setState({presentationDisplay: parseInt(this.state.presentationDisplay) + 1});}
@@ -1180,36 +1181,36 @@ class App extends Component {
               potentially reduced secondary market ticket prices
             </div>) : null}
 
-            {this.state.presentationDisplay > 10 && this.state.presentationDisplay < 20 ? (<div style={{paddingTop: "40px",
+            {this.state.presentationDisplay > 10 && this.state.presentationDisplay < 21 ? (<div style={{paddingTop: "40px",
                   fontSize: "28px", textAlign: "center"}}>
               Application overview
             </div>) : null}
 
-            {this.state.presentationDisplay > 10 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "350px"}}>
+            {this.state.presentationDisplay > 11 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "350px"}}>
               Final application will allow event creators to:</div>) : null}
             
-            {this.state.presentationDisplay > 11 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
+            {this.state.presentationDisplay > 12 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
               issue, sell and manage general admission tickets (fungible ERC20)</div>) : null}
             
-            {this.state.presentationDisplay > 12 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
+            {this.state.presentationDisplay > 13 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
               issue, sell and manage assigned seating tickets (non-fungible ERC721)</div>) : null}
             
-            {this.state.presentationDisplay > 13 && this.state.presentationDisplay < 15 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
+            {this.state.presentationDisplay > 14 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
               control the parameters around the reselling of tickets purchased</div>) : null}
 
-            {this.state.presentationDisplay > 14 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "350px"}}>
+            {this.state.presentationDisplay > 15 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "350px"}}>
               Phase 1 consists of four different user screens:</div>) : null}
 
-            {this.state.presentationDisplay > 15 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              Issue Tickets: Event creator can generate a general admission ticket offering</div>) : null}
-
-            {this.state.presentationDisplay > 16 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
+            {this.state.presentationDisplay > 16 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
               All Events: Ticket buyer can purchase general admission tickets</div>) : null}
 
-            {this.state.presentationDisplay > 17 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
+            {this.state.presentationDisplay > 17 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
+              Issue Tickets: Event creator can generate a general admission ticket offering</div>) : null}
+
+            {this.state.presentationDisplay > 18 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
               My Events: Event creator is provided a list of all ticket offerings they have created</div>) : null}
               
-            {this.state.presentationDisplay > 18 && this.state.presentationDisplay < 20  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
+            {this.state.presentationDisplay > 19 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
               My Ticket Wallet: Ticket buyer is provided a list of all the tickets they have purchased</div>) : null}
           </div>
         </div>
@@ -1459,13 +1460,13 @@ class App extends Component {
       )
     } else {
       return (
-        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
+        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transfer was successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
               onClick={async() => {
               this.retrieveEventData();
-              this.setState({ transferOrder: {}, display: "myTickets", modal: "none", modalSpinner: false, transactionSuccess: "none"});
+              this.setState({ transferOrder: {}, modal: "none", modalSpinner: false, transactionSuccess: "none"});
             }
             }>CONTINUE</button>
           </div>
