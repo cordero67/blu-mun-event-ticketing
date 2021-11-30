@@ -178,9 +178,7 @@ class App extends Component {
           //console.log("I did not create or buy tickets to this event");
         }
 
-        console.log("Hello");
         console.log("MY tickets: ", this.state.myTickets);
-        console.log("Goodbye");
 
         if (index === gaTickets.length - 1) {
           this.setState({ isLoading: false });
@@ -190,7 +188,7 @@ class App extends Component {
   };
 
   eventButtons = (contains, item, index) => {
-    const { web3, gaTicketDetails } = this.state;
+    const { web3 } = this.state;
     if(contains) {
       return (
         <div style={{paddingTop: "20px", paddingBottom: "10px"}}>
@@ -214,7 +212,6 @@ class App extends Component {
           <button
             className={classes.ButtonGreenSmall}
             onClick={async () => {
-              const { web3 } = this.state;
               
               const gaEvent = new web3.eth.Contract(
                 GAEventTicket.abi,
@@ -229,8 +226,6 @@ class App extends Component {
               newItem.available = available;
               newItem.quantity = 0;
               this.setState({modal: "buy", newOrder: newItem})
-              console.log("Buy item: ", item)
-              console.log("gaTicketDetails: ", gaTicketDetails)
             }}
           >
             BUY TICKETS
@@ -241,21 +236,23 @@ class App extends Component {
   }
 
   eventList = () => {
-    const { isLoading, web3, accounts, gaTicketDetails } = this.state;
+    const { isLoading, gaTicketDetails } = this.state;
 
     if (isLoading) {
-      return <div>Loading information...</div>;
+      return <div style={{fontSize: "26px"}}>Loading information...</div>;
     } else if (!(gaTicketDetails.length === 0)) {
       return (
         <Fragment>
           {gaTicketDetails.map((item, index) => {
-            console.log("New order: ", this.state.newOrder)
             let contains = false;
             if (this.state.myEvents.includes(item.address)) {
               contains = true;
             }
             return (
-              <article className={classes.Event}>
+              <article
+                key={index}
+                className={classes.Event}
+              >
                 <div
                   className={classes.EventTitle}
                   style={{ fontSize: "24px" }}
@@ -325,36 +322,66 @@ class App extends Component {
     }
   }
 
-  myEventList = () => {
+  myEventsList = () => {
     const { gaTicketDetails, myEvents } = this.state;
     if (this.state.isLoading) {
-      return <div>Loading information...</div>;
+      return <div style={{fontSize: "26px"}}>Loading information...</div>;
     } else if (!(myEvents.length === 0)) {
       return (
         <Fragment>
           {gaTicketDetails.map((item, index) => {
             let match = false;
-            myEvents.map((item2, index) => {
+            myEvents.forEach((item2, index) => {
               if (item2 === item.address) {
                 match = true;
               }
             });
-            //if (item.address in myEvents) {
             if (match) {
               return (
-                <article className={classes.Event}>
+                <div style={{paddingBottom: "30px"}}>
                   <div
                     className={classes.EventTitle}
                     style={{ fontSize: "24px" }}
                   >
-                    {`${gaTicketDetails[index].name} (symbol: ${gaTicketDetails[index].symbol})`}
+                    {`${gaTicketDetails[index].name} (${gaTicketDetails[index].symbol})`}
                   </div>
-                  <div>Ticket Symbol: {item.symbol}</div>
-                  <div>Initial Ticket Amount: {item.ticketSupply}</div>
-                  <div>Tickets Availability: {item.available}</div>
-                  <div>Ticket Price: {item.primaryPrice} wei</div>
-                  <div>Event Creator: {item.creator}</div>
-                </article>
+                  <div
+                    style={{display: "grid", 
+                      gridTemplateColumns: "280px 300px",
+                      columnGap: "5px",
+                      fontSize: "20px"
+                    }}
+                  >
+                    <div style={{textAlign: "right"}}>Initial Ticket Issuance:</div>
+                    <div style={{textAlign: "left"}}>{item.ticketSupply}</div>
+                    <div style={{textAlign: "right"}}>Current Ticket Availability:</div>
+                    <div style={{textAlign: "left"}}>{item.available}</div>
+                    <div style={{textAlign: "right"}}>Ticket Price:</div>
+                    <div style={{textAlign: "left"}}>{item.primaryPrice} wei</div>
+                    <div style={{textAlign: "right"}}>Ticket Address:</div>
+                    <div style={{textAlign: "left"}}>{item.address}</div>
+                  </div>
+                  <div style={{paddingLeft: "160px", paddingTop: "20px", paddingBottom: "30px"}}>
+                    <button
+                      className={classes.ButtonBlueSmall}
+                      onClick={() => {
+                        let newItem = {
+                        transferring: 0,
+                        recipient: "",
+                        address: item.address,
+                        amount: item.available,
+                        creator: item.creator,
+                        name: item.name,
+                        price: item.primaryPrice,
+                        symbol: item.symbol
+                        }
+                        this.setState({modal: "transfer", transferOrder: newItem})
+                        console.log("transfer Order: ", this.state.transferOrder)
+                      }}
+                    >TRANSFER TICKETS</button>
+                  </div>
+                  <hr style={{width: "100%", backgroundColor: "#666"}}/>
+              </div>
               );
             }
           })}
@@ -385,9 +412,8 @@ class App extends Component {
 
   myTicketsList = () => {
     const { myTickets } = this.state;
-    console.log("Transfer order: ", this.state.transferOrder)
     if (this.state.isLoading) {
-      return <div>Loading...</div>;
+      return <div style={{fontSize: "26px"}}>Loading information...</div>;
     } else if (!(myTickets.length === 0)) {
       return (
         <Fragment>
@@ -434,7 +460,6 @@ class App extends Component {
         </Fragment>
       );
     } else {
-      
       return (
         <div
           style={{
@@ -467,7 +492,7 @@ class App extends Component {
     console.log("Accounts: ", this.state.accounts);
 
     // launches a GATicket event
-    const result1 = await factory.methods
+    await factory.methods
       .createGATickets(name, symbol, initial, price)
       .send({ from: accounts[0] });
 
@@ -499,18 +524,6 @@ class App extends Component {
     let newOrder = { ...this.state.transferOrder };
     newOrder[event.target.name] = event.target.value;
     this.setState({ transferOrder: newOrder });
-
-/*
-                  console.log("Value: ", event.target.value);
-                  let tempOrder = {...transferOrder};
-                  console.log("Temp Order: ", tempOrder);
-                  tempOrder.transferring = event.target.value;
-                  console.log("Transferring: ", tempOrder);
-                  this.setState({transferOrder: tempOrder})
-*/
-
-
-
   };
 
   updateGaTicketWarnings = (event) => {
@@ -573,7 +586,6 @@ class App extends Component {
   };
 
   updateGaTransferWarnings = (event) => {
-    let quantityRegex = /^[0-9]$/;
     let addressRegex = /^0x[a-fA-F0-9]{40}$/;
 
     let name = event.target.name;
@@ -984,40 +996,43 @@ class App extends Component {
         >
           <li></li>
           <li
-            className={classes.HeaderItem}
             onClick={() => {
               console.log("display: ", this.state.display)
               this.changeDisplay("events");
             }}
+            className={this.state.display === "events" ? classes.HeaderItemSelected : classes.HeaderItem}
+            
           >
             All Events
           </li>
           <li
-            className={classes.HeaderItem}
             onClick={() => {
               this.changeDisplay("create");
             }}
+            className={this.state.display === "create" ? classes.HeaderItemSelected : classes.HeaderItem}
           >
             Issue Tickets
           </li>
           <li
-            className={classes.HeaderItem}
             onClick={() => {
               this.changeDisplay("myEvents");
             }}
+            className={this.state.display === "myEvents" ? classes.HeaderItemSelected : classes.HeaderItem}
           >
             My Events
           </li>
           <li
-            className={classes.HeaderItem}
             onClick={() => {
+              console.log("display before myTicket click: ", this.state.display)
               this.changeDisplay("myTickets");
+              console.log("display after myTicket click: ", this.state.display)
             }}
+            className={this.state.display === "myTickets" ? classes.HeaderItemSelected : classes.HeaderItem}
           >
             My Ticket Wallet
           </li>
           <li
-            className={classes.HeaderItem}
+            className={this.state.display === "exchange" ? classes.HeaderItemSelected : classes.HeaderItem}
             onClick={() => {
               this.changeDisplay("exchange");
             }}
@@ -1125,8 +1140,28 @@ class App extends Component {
     } else return null
   }
 
+  myEventsDisplay = () => {
+    if(this.state.display === "myEvents" || this.state.display === "all") {
+      return (
+        <div className={classes.PageDisplay}>
+          <div className={classes.PageTitle}>
+            My Events
+          </div>
+          <div
+            style={{
+              width: "800px",
+              paddingTop: "30px",
+              paddingRight: "40px",
+              paddingBottom: "30px", 
+              paddingLeft: "40px"
+            }}>{this.myEventsList()}</div>
+        </div>
+      )
+    } else return null
+  }
+
   transferModalBody = () => {
-    const { web3, accounts, gaTicketDetails, transferOrder } = this.state;
+    const { web3, accounts, transferOrder } = this.state;
       const gaEvent = new web3.eth.Contract(
         GAEventTicket.abi,
         transferOrder.address
@@ -1221,7 +1256,7 @@ class App extends Component {
               }}
               type="text"
               maxLength="42"
-              placeholder="42 hexadecimal address my starting with 0x"
+              placeholder="42 hexadecimal address starting with 0x"
               name="recipient"
               value={this.state.transferOrder.recipient}
               onChange={(event) => {
@@ -1251,12 +1286,10 @@ class App extends Component {
             disabled={this.disableTransferButton()}
             onClick={async () => {
               this.setState({modalSpinner: true});
-              let tempOrder = {...this.state.transferOrder};
               console.log("transferOrder: ", this.state.transferOrder.transferring)
 
               try {
                 await gaEvent.methods
-                  //.transfer("0x115d7a7E4Dbc05A825722898FFE331e45e1E2157", this.state.transferOrder.transferring)
                   .transfer(this.state.transferOrder.recipient, this.state.transferOrder.transferring)
                   .send({ from: accounts[0]});
                   this.setState({modalSpinner: false, transactionSuccess: "success"})
@@ -1290,7 +1323,6 @@ class App extends Component {
         </div>
       )
     } else {
-      let tempOrder = {...this.state.transferOrder};
       return (
         <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
           <div style={{paddingTop: "40px"}}>
@@ -1308,7 +1340,7 @@ class App extends Component {
   }
 
   orderModalBody = () => {
-    const { web3, accounts, gaTicketDetails, newOrder } = this.state;
+    const { web3, accounts, newOrder } = this.state;
       const gaEvent = new web3.eth.Contract(
         GAEventTicket.abi,
         newOrder.address
@@ -1432,19 +1464,13 @@ class App extends Component {
         </div>
       )
     } else {
-      let tempOrder = {...this.state.newOrder};
       return (
         <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
               onClick={async() => {
-                //const result = await gaEvent.methods
-                //  .balanceOf(gaTicketDetails[tempOrder.index].creator)
-                //  .call();
                 this.retrieveEventData();
-                //let tempState = [...this.state.gaTicketDetails];
-                //tempState[newOrder.index].available = result;
                 this.setState({ newOrder: {}, display: "myTickets", modal: "none", modalSpinner: false, transactionSuccess: "none"});
               }
             }>CONTINUE</button>
@@ -1455,14 +1481,7 @@ class App extends Component {
   }
 
   createModalBody = () => {
-    const { web3, accounts, gaTicketDetails, newEvent } = this.state;
-
-/*      const gaEvent = new web3.eth.Contract(
-        GAEventTicket.abi,
-        newOrder.address
-      );
-*/
-
+    const { web3, accounts, factory, newEvent } = this.state;
     if(this.state.modalSpinner) {
       return (
         <Fragment>
@@ -1500,7 +1519,6 @@ class App extends Component {
               disabled={false}
               onClick={async () => {
                 this.setState({modalSpinner: true});
-                const { factory, web3 } = this.state;
                 let tempEvent = {...this.state.newEvent};
 
                 // use "web3" instance to get user accounts associated with given provider
@@ -1508,10 +1526,9 @@ class App extends Component {
                 this.setState({ accounts: accounts });
                 console.log("Accounts: ", this.state.accounts);
 
-
                 try {
                   // launches a GATicket event
-                  const result1 = await factory.methods
+                  await factory.methods
                   .createGATickets(tempEvent.name, tempEvent.symbol, tempEvent.initial, tempEvent.price)
                   .send({ from: accounts[0] });
                   this.setState({modalSpinner: false, transactionSuccess: "success"})
@@ -1519,18 +1536,6 @@ class App extends Component {
                   console.log("Something happened")
                   this.setState({modalSpinner: false, transactionSuccess: "failure"})
                 }
-                /*
-                try {
-                  await gaEvent.methods
-                    .primaryTransfer(tempOrder.quantity)
-                    .send({ from: accounts[0], value: value });
-                    this.setState({modalSpinner: false, transactionSuccess: "success"})
-
-                } catch (error) {
-                  console.log("Something happened")
-                  this.setState({modalSpinner: false, transactionSuccess: "failure"})
-                }
-                */
               }}
             >EXECUTE TICKET CREATION</button>
           </div>
@@ -1595,14 +1600,12 @@ class App extends Component {
         </div>
       )
     } else {
-      let tempEvent = {...this.state.newEvent};
       return (
         <div style={{fontSize: "24px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
           <div style={{paddingTop: "40px"}}>
             <button
               className={classes.ButtonGreySmall}
               onClick={async() => {
-                // updates gaTicketDetails
                 this.retrieveEventData();
                 this.setState({
                   newEvent: { name: "", symbol: "", initial: "", price: "" },
@@ -1631,17 +1634,15 @@ class App extends Component {
 
   createModal =  () => {
     if(this.state.modal === "create") {
-      const { web3, accounts, gaTicketDetails, newOrder } = this.state;
       return (
         <Fragment>
           <div className={classes.Backdrop}></div>
           <div
             style={{
               transform: this.state.modal === "create" ? "translateY(0)" : "translateY(-100vh)",
-              opacity: this.state.modal === "create" ? "1" : "0",
+              opacity: this.state.modal === "create" ? "1" : "0", height: "450px"
             }}
             className={classes.Modal}
-            style={{height: "450px"}}
           >
             {this.createModalBody()}
           </div>
@@ -1651,21 +1652,17 @@ class App extends Component {
       return null;
   }
 
-
-
   orderModal =  () => {
     if(this.state.modal === "buy") {
-      const { web3, accounts, gaTicketDetails, newOrder } = this.state;
       return (
         <Fragment>
           <div className={classes.Backdrop}></div>
           <div
             style={{
               transform: this.state.modal === "buy" ? "translateY(0)" : "translateY(-100vh)",
-              opacity: this.state.modal === "buy" ? "1" : "0",
+              opacity: this.state.modal === "buy" ? "1" : "0", height: "450px"
             }}
             className={classes.Modal}
-            style={{height: "450px"}}
           >
             {this.orderModalBody()}
           </div>
@@ -1677,17 +1674,16 @@ class App extends Component {
 
   transferModal =  () => {
     if(this.state.modal === "transfer") {
-      const { web3, accounts, gaTicketDetails, newOrder } = this.state;
+      console.log("transfer order: ", this.state.transferOrder)
       return (
         <Fragment>
           <div className={classes.Backdrop}></div>
           <div
             style={{
               transform: this.state.modal === "transfer" ? "translateY(0)" : "translateY(-100vh)",
-              opacity: this.state.modal === "transfer" ? "1" : "0",
+              opacity: this.state.modal === "transfer" ? "1" : "0", height: "500px"
             }}
             className={classes.Modal}
-            style={{height: "500px"}}
           >
             {this.transferModalBody()}
           </div>
@@ -1705,25 +1701,12 @@ class App extends Component {
         <div>{this.createModal()}</div>
         <div>{this.orderModal()}</div>
         <div>{this.transferModal()}</div>
-
-        
-
         <div className={classes.MainDisplay}>
           {this.eventsDisplay()}
           {this.issueTicketsDisplay()}
-          {this.exchangeDisplay()}
+          {this.myEventsDisplay()}
           {this.myTicketsDisplay()}
-
-
-          {this.state.display === "myEvents" || this.state.display === "all" ? (
-            <div className={classes.Main}>
-              <div className={classes.PageTitle}>My Events
-              </div>
-              <section className={classes.Events}>
-                {this.myEventList()}
-              </section>
-            </div>
-          ) : null}
+          {this.exchangeDisplay()}
         </div>
       </Fragment>
     );
@@ -1731,38 +1714,3 @@ class App extends Component {
 }
 
 export default App;
-
-/*
-async loadBlockchainData() {
-  // Get network provider and web3 instance.
-  const web3 = await getWeb3(); //dup
-
-  // function from "web3.eth.net" library that gets current network ID
-  const networkId = await web3.eth.net.getId(); //dup
-
-  // function from "web3.eth.net" library that gets current network ID
-  const network = await web3.eth.net.getNetworkType(); //dup
-
-  const accounts = await web3.eth.getAccounts(); //dup
-
-  const address1 = Token.networks[networkId].address; //dup
-
-  // create an instance of the contract using an instance of Web3
-  const token = new web3.eth.Contract(
-    Token.abi,
-    Token.networks[networkId].address
-  );
-
-  const totalSupply = await token.methods.totalSupply().call();
-
-  const address2 = Factory.networks[networkId].address; //dup
-
-  // create an instance of the contract using an instance of Web3
-  const factory = new web3.eth.Contract( //dup
-    Factory.abi, //dup
-    Factory.networks[networkId].address //dup
-  );
-
-  const owner = await token.methods.owner().call();
-}
-*/

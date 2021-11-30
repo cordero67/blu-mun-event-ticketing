@@ -5,13 +5,19 @@
   color: #F0AE00;
   cursor: pointer;
 }
+.HeaderItem:hover {
+  color: #fff;
+}
 
 .HeaderItemSelected {
   font-size: 20px;
   padding-top: 25px;
   list-style-type: none;
-  color: red;
+  color: #F0AE00;
   cursor: pointer;
+}
+.HeaderItemSelected:hover {
+  color: #fff;
 }
 
 .MainDisplay {
