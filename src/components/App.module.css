@@ -1,5 +1,5 @@
 .HeaderItem {
-  font-size: 20px;
+  font-size: 16px;
   padding-top: 25px;
   list-style-type: none;
   color: #F0AE00;
@@ -10,7 +10,7 @@
 }
 
 .HeaderItemSelected {
-  font-size: 20px;
+  font-size: 16px;
   padding-top: 25px;
   list-style-type: none;
   color: #F0AE00;
@@ -32,14 +32,14 @@
 }
 
 .PageTitle {
-  font-size: 34px;
+  font-size: 30px;
   font-weight: 700;
 }
 
 .AccountHeader {
+  font-size: 22px;
   padding-top: 100px;
   text-align: center;
-  font-size: 26px;
 }
 
 .TicketCreationPane {
@@ -50,15 +50,15 @@
 }
 
 .TicketCreationTitle {
+  font-size: 22px;
   padding-bottom: 10px;
-  font-size: 26px;
   font-weight: 600;
 }
 
 .InputBoxLabel {
   padding: 10px 10px 0px 0px;
   height: 30px;
-  font-size: 15px;
+  font-size: 11px;
   font-weight: 600;
   background-color: #fff;
   box-sizing: border-box;
@@ -66,7 +66,7 @@
 
 .InputBox {
   height: auto;
-  font-size: 16px;
+  font-size: 12px;
   padding: 5px 10px 10px 0px;
   box-sizing: border-box;
   border-color: red;
@@ -98,7 +98,7 @@
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 .ButtonGreen:hover {
@@ -122,7 +122,7 @@
   color: white;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 
@@ -157,7 +157,7 @@
   color: white;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 
@@ -203,7 +203,7 @@
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 .ButtonGreySmall:hover {
@@ -226,7 +226,7 @@
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 .ButtonBlueSmall:hover {
@@ -250,7 +250,7 @@
   color: white;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 
@@ -295,7 +295,7 @@
   box-shadow: 2px 2px 3px #e3e3e3;
   margin: 10px 10px 10px 10px;
   box-sizing: border-box;
-  font-size: 18px;
+  font-size: 14px;
   padding-top: 20px;
   width: 460px;
   height: 360px;
@@ -312,7 +312,7 @@
 }
 
 .EventDetail {
-  font-size: 14px;
+  font-size: 10px;
   width: 460px;
   height: 130px;
   text-align: left;
@@ -321,20 +321,20 @@
 }
 
 .EventDate {
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 600;
   padding-bottom: 6px;
   color: red;
 }
 
 .EventTitle {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   padding-bottom: 6px;
 }
 
 .EventLocation {
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 400;
   color: grey;
 }
