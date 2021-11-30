@@ -1070,7 +1070,7 @@ class App extends Component {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "580px 580px 580px",
+              gridTemplateColumns: "480px 480px 480px",
               columnGap: "20px"
             }}
           >
@@ -1242,8 +1242,8 @@ class App extends Component {
             <input
               className={
                 this.state.gaTransferWarnings.recipient
-                  ? classes.InputBoxContentError
-                  : classes.InputBoxContent
+                  ? classes.InputBoxContentSmallError
+                  : classes.InputBoxContentSmall
               }
               onFocus={() => {
                 let tempWarnings = { ...this.state.gaTransferWarnings };
@@ -1501,7 +1501,8 @@ class App extends Component {
               display: "grid",
               gridTemplateColumns: "50% 48%",
               columnGap: "2%",
-              paddingTop: "5px"
+              paddingTop: "5px",
+              fontSize: "16px"
             }}>
               <div style={{textAlign: "right"}}>
                 <div style={{fontSize: "20px"}}>Ticket Symbol:</div>

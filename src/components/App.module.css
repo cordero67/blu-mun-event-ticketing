@@ -79,7 +79,7 @@
   box-sizing: border-box;
   line-height: 1.75;
   height: 40px;
-  width: 500px;
+  width: 400px;
 }
 
 .InputBoxContentError {
@@ -88,12 +88,48 @@
   box-sizing: border-box;
   line-height: 1.75;
   height: 40px;
-  width: 500px;
+  width: 400px;
+}
+
+.InputBoxLabel {
+  padding: 10px 10px 0px 0px;
+  height: 30px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.InputBoxSmall {
+  height: auto;
+  font-size: 12px;
+  padding: 5px 10px 10px 0px;
+  box-sizing: border-box;
+  border-color: red;
+  background-color: #fff;
+}
+
+.InputBoxContentSmall {
+  padding: 9px 10px;
+  border: 1px solid blue;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+  width: 350px;
+}
+
+.InputBoxContentSmallError {
+  padding: 9px 10px;
+  border: 1px solid red;
+  box-sizing: border-box;
+  line-height: 1.75;
+  height: 40px;
+  width: 350px;
 }
 
 .ButtonGreen {
   height: 40px;
-  width: 500px;
+  width: 400px;
   background-color: #00a300;
   color: #fff;
   border: 1px solid black;
@@ -116,7 +152,7 @@
 
 .ButtonGreenOpac {
   height: 40px;
-  width: 500px;
+  width: 400px;
   background-color: #00a300;
   opacity: 0.3;
   color: white;
@@ -133,7 +169,7 @@
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 .ButtonRedSmall:hover {
@@ -168,7 +204,7 @@
   color: #fff;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 .ButtonGreenSmall:hover {
@@ -192,7 +228,7 @@
   color: white;
   border: 1px solid black;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 16px;
   outline: none;
 }
 
@@ -259,7 +295,7 @@
   position: fixed;
   z-index: 700;
   background-color: white;
-  width: 600px;
+  width: 440px;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px black;
   padding: 25px 15px;
