@@ -413,7 +413,7 @@ class App extends Component {
   myTicketsList = () => {
     const { myTickets } = this.state;
     if (this.state.isLoading) {
-      return <div style={{fontSize: "26px"}}>Loading information...</div>;
+      return <div style={{fontSize: "22px"}}>Loading information...</div>;
     } else if (!(myTickets.length === 0)) {
       return (
         <Fragment>
@@ -430,7 +430,7 @@ class App extends Component {
                   style={{display: "grid", 
                     gridTemplateColumns: "180px 300px",
                     columnGap: "5px",
-                    fontSize: "20px"
+                    fontSize: "16px"
                   }}
                 >
                   <div style={{textAlign: "right"}}>Ticket address:</div>
@@ -1189,7 +1189,8 @@ class App extends Component {
             style={{
               display: "grid",
               gridTemplateColumns: "50% 48%",
-              columnGap: "2%"
+              columnGap: "2%",
+              fontSize: "16px"
             }}>
               <div style={{textAlign: "right"}}>
                 <div style={{fontSize: "16px"}}>Ticket Symbol:</div>
