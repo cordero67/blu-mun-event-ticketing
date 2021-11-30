@@ -115,7 +115,7 @@
   box-sizing: border-box;
   line-height: 1.75;
   height: 40px;
-  width: 350px;
+  width: 320px;
 }
 
 .InputBoxContentSmallError {
@@ -124,7 +124,7 @@
   box-sizing: border-box;
   line-height: 1.75;
   height: 40px;
-  width: 350px;
+  width: 320px;
 }
 
 .ButtonGreen {
@@ -164,7 +164,7 @@
 
 .ButtonRedSmall {
   height: 40px;
-  width: 350px;
+  width: 320px;
   background-color: red;
   color: #fff;
   border: 1px solid black;
@@ -187,7 +187,7 @@
 
 .ButtonRedSmallOpac {
   height: 40px;
-  width: 350px;
+  width: 320px;
   background-color: #00a300;
   opacity: 0.3;
   color: white;
@@ -199,7 +199,7 @@
 
 .ButtonGreenSmall {
   height: 40px;
-  width: 350px;
+  width: 320px;
   background-color: #00a300;
   color: #fff;
   border: 1px solid black;
@@ -222,7 +222,7 @@
 
 .ButtonGreenSmallOpac {
   height: 40px;
-  width: 350px;
+  width: 320px;
   background-color: #00a300;
   opacity: 0.3;
   color: white;
@@ -234,7 +234,7 @@
 
 .ButtonGreySmall {
   height: 40px;
-  width: 300px;
+  width: 320px;
   background-color: #999999;
   color: #fff;
   border: 1px solid black;
@@ -257,7 +257,7 @@
 
 .ButtonBlueSmall {
   height: 40px;
-  width: 350px;
+  width: 320px;
   background-color: #0000f5;
   color: #fff;
   border: 1px solid black;
@@ -280,7 +280,7 @@
 
 .ButtonBlueSmallOpac {
   height: 40px;
-  width: 350px;
+  width: 320px;
   background-color: #0000f5;
   opacity: 0.3;
   color: white;
