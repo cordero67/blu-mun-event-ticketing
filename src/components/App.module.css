@@ -2,7 +2,7 @@
   font-size: 16px;
   padding-top: 30px;
   list-style-type: none;
-  color: #F0AE00;
+  color: #f0ae00;
   cursor: pointer;
 }
 .HeaderItem:hover {
@@ -13,7 +13,7 @@
   font-size: 16px;
   padding-top: 30px;
   list-style-type: none;
-  color: #F0AE00;
+  color: #f0ae00;
   cursor: pointer;
 }
 .HeaderItemSelected:hover {
@@ -173,13 +173,13 @@
   outline: none;
 }
 .ButtonRedSmall:hover {
-  background-color: #007a00;
+  background-color: #a30000;
   color: #fff;
   border: 1px solid black;
   outline: none;
 }
 .ButtonRedSmall:active {
-  background-color: #005200;
+  background-color: #7a0000;
   color: #fff;
   border: 1px solid black;
   outline: none;
@@ -299,7 +299,7 @@
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px black;
   padding: 25px 15px;
-  left: calc((100vw - 600px)/2);
+  left: calc((100vw - 600px) / 2);
   top: 10%;
   text-align: center;
   box-sizing: border-box;
@@ -339,7 +339,7 @@
 
 .Event:hover,
 .Event:active {
-  background-color: #ECF2FF;
+  background-color: #ecf2ff;
   box-shadow: 20px 20px 50px #ccc;
 }
 

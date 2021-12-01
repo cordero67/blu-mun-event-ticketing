@@ -18,6 +18,10 @@ The Blü Mün Event Ticketing DApp will be released in several phases (see "Blü
 
 The Blü Mün Event Ticketing DApp can be accessed at
 
+## Phase 1 Screencast
+
+Screen cast url: https://www.youtube.com/watch?v=YvhspQY8WMA
+
 ## Public Ethereum address
 
 Certification for the Consensys 2021 Blockchain Developer Bootcamp is located at the following address:
@@ -28,7 +32,7 @@ Certification for the Consensys 2021 Blockchain Developer Bootcamp is located at
 
 The application is publically avaialable at the following url:
 
-https://61a66073c51a56000759ffb5--focused-poincare-435243.netlify.app/
+https://61a6b85f43a4200007d0b1bc--focused-poincare-435243.netlify.app/
 
 ## Directory Structure
 
