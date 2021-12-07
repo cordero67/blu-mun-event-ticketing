@@ -9,6 +9,7 @@ import Logo from "./Assets/blu_mun.jpeg";
 
 import classes from "./App.module.css";
 
+// Completes Phase 1 of Overall Project
 class App extends Component {
   state = {
     isLoading: true,
@@ -107,11 +108,11 @@ class App extends Component {
       this.setState({ manager: manager });
       console.log("Factory manager ", this.state.manager);
 
-      this.retrieveEventData();
+      this.retrieveBlockData();
     } catch (err) {}
   };
 
-  retrieveEventData = async () => {
+  retrieveBlockData = async () => {
     this.setState({ isLoading: true });
     const { factory, web3 } = this.state;
 
@@ -191,35 +192,45 @@ class App extends Component {
 
   eventButtons = (contains, item, index) => {
     const { web3 } = this.state;
-    if(contains) {
+    if (contains) {
       return (
-        <div style={{paddingTop: "20px", paddingBottom: "10px"}}>
+        <div style={{ paddingTop: "20px", paddingBottom: "10px" }}>
           <button
             className={classes.ButtonBlueSmall}
             onClick={() => {
-              this.setState({display: "myEvents"})
+              this.setState({ display: "myEvents" });
             }}
-          >MANAGE YOUR EVENT</button>
+          >
+            MANAGE YOUR EVENT
+          </button>
         </div>
-      )
+      );
     } else if (item.available === "0") {
       return (
-        <div style={{paddingTop: "20px", paddingBottom: "5px", fontSize: "30px", fontWeight: "600", color: "red"}}>
+        <div
+          style={{
+            paddingTop: "20px",
+            paddingBottom: "5px",
+            fontSize: "30px",
+            fontWeight: "600",
+            color: "red",
+          }}
+        >
           SOLD OUT
         </div>
-      )
+      );
     } else {
       return (
-        <div style={{paddingTop: "20px", paddingBottom: "10px"}}>
+        <div style={{ paddingTop: "20px", paddingBottom: "10px" }}>
           <button
             className={classes.ButtonGreenSmall}
             onClick={async () => {
-              
               const gaEvent = new web3.eth.Contract(
                 GAEventTicket.abi,
-                item.address)
+                item.address
+              );
 
-              let newItem = {...item};
+              let newItem = { ...item };
               let available = await gaEvent.methods
                 .balanceOf(item.creator)
                 .call();
@@ -227,21 +238,21 @@ class App extends Component {
               newItem.index = index;
               newItem.available = available;
               newItem.quantity = 0;
-              this.setState({modal: "buy", newOrder: newItem})
+              this.setState({ modal: "buy", newOrder: newItem });
             }}
           >
             BUY TICKETS
           </button>
-        </div>          
-      )
+        </div>
+      );
     }
-  }
+  };
 
   eventList = () => {
     const { isLoading, gaTicketDetails } = this.state;
 
     if (isLoading) {
-      return <div style={{fontSize: "22px"}}>Loading information...</div>;
+      return <div style={{ fontSize: "22px" }}>Loading information...</div>;
     } else if (!(gaTicketDetails.length === 0)) {
       return (
         <Fragment>
@@ -251,10 +262,7 @@ class App extends Component {
               contains = true;
             }
             return (
-              <article
-                key={index}
-                className={classes.Event}
-              >
+              <article key={index} className={classes.Event}>
                 <div
                   className={classes.EventTitle}
                   style={{ fontSize: "24px" }}
@@ -265,24 +273,29 @@ class App extends Component {
                   style={{
                     display: "grid",
                     gridTemplateColumns: "50% 48%",
-                    columnGap: "2%"
-                  }}>
-                  <div style={{textAlign: "right"}}>
+                    columnGap: "2%",
+                  }}
+                >
+                  <div style={{ textAlign: "right" }}>
                     <div>Ticket Symbol:</div>
                     <div>Tickets Available:</div>
                     <div>Ticket Price:</div>
                   </div>
-                  <div style={{textAlign: "left"}}>
+                  <div style={{ textAlign: "left" }}>
                     <div>{item.symbol}</div>
                     <div>{item.available}</div>
                     <div>{item.primaryPrice} wei</div>
                   </div>
                 </div>
-                
+
                 {this.eventButtons(contains, item, index)}
-                <div style={{paddingTop: "10px", fontWeight: "600"}}>Ticket Address</div>
+                <div style={{ paddingTop: "10px", fontWeight: "600" }}>
+                  Ticket Address
+                </div>
                 <div>{item.address}</div>
-                <div style={{paddingTop: "10px", fontWeight: "600"}}>Event Creator</div>
+                <div style={{ paddingTop: "10px", fontWeight: "600" }}>
+                  Event Creator
+                </div>
                 <div>{item.creator}</div>
               </article>
             );
@@ -308,26 +321,14 @@ class App extends Component {
             There are no events available
           </div>
         </div>
-      )
+      );
     }
   };
-
-  detectAccountChange() {
-    const ethereum = window.ethereum;
-
-    if (ethereum) {
-      ethereum.on("accountsChanged", function (accounts) {
-        console.log(accounts[0]);
-        // this.setState({ loading: false})
-        window.location.reload();
-      });
-    }
-  }
 
   myEventsList = () => {
     const { gaTicketDetails, myEvents } = this.state;
     if (this.state.isLoading) {
-      return <div style={{fontSize: "22px"}}>Loading information...</div>;
+      return <div style={{ fontSize: "22px" }}>Loading information...</div>;
     } else if (!(myEvents.length === 0)) {
       return (
         <Fragment>
@@ -340,7 +341,7 @@ class App extends Component {
             });
             if (match) {
               return (
-                <div style={{paddingBottom: "30px"}}>
+                <div style={{ paddingBottom: "30px" }}>
                   <div
                     className={classes.EventTitle}
                     style={{ fontSize: "24px" }}
@@ -348,42 +349,63 @@ class App extends Component {
                     {`${gaTicketDetails[index].name} (${gaTicketDetails[index].symbol})`}
                   </div>
                   <div
-                    style={{display: "grid", 
+                    style={{
+                      display: "grid",
                       gridTemplateColumns: "280px 300px",
                       columnGap: "5px",
-                      fontSize: "16px"
+                      fontSize: "16px",
                     }}
                   >
-                    <div style={{textAlign: "right"}}>Initial Ticket Issuance:</div>
-                    <div style={{textAlign: "left"}}>{item.ticketSupply}</div>
-                    <div style={{textAlign: "right"}}>Current Ticket Availability:</div>
-                    <div style={{textAlign: "left"}}>{item.available}</div>
-                    <div style={{textAlign: "right"}}>Ticket Price:</div>
-                    <div style={{textAlign: "left"}}>{item.primaryPrice} wei</div>
-                    <div style={{textAlign: "right"}}>Ticket Address:</div>
-                    <div style={{textAlign: "left"}}>{item.address}</div>
+                    <div style={{ textAlign: "right" }}>
+                      Initial Ticket Issuance:
+                    </div>
+                    <div style={{ textAlign: "left" }}>{item.ticketSupply}</div>
+                    <div style={{ textAlign: "right" }}>
+                      Current Ticket Availability:
+                    </div>
+                    <div style={{ textAlign: "left" }}>{item.available}</div>
+                    <div style={{ textAlign: "right" }}>Ticket Price:</div>
+                    <div style={{ textAlign: "left" }}>
+                      {item.primaryPrice} wei
+                    </div>
+                    <div style={{ textAlign: "right" }}>Ticket Address:</div>
+                    <div style={{ textAlign: "left" }}>{item.address}</div>
                   </div>
-                  <div style={{paddingLeft: "160px", paddingTop: "20px", paddingBottom: "30px"}}>
+                  <div
+                    style={{
+                      paddingLeft: "160px",
+                      paddingTop: "20px",
+                      paddingBottom: "30px",
+                    }}
+                  >
                     <button
                       className={classes.ButtonBlueSmall}
                       onClick={() => {
                         let newItem = {
-                        transferring: 0,
-                        recipient: "",
-                        address: item.address,
-                        amount: item.available,
-                        creator: item.creator,
-                        name: item.name,
-                        price: item.primaryPrice,
-                        symbol: item.symbol
-                        }
-                        this.setState({modal: "transfer", transferOrder: newItem})
-                        console.log("transfer Order: ", this.state.transferOrder)
+                          transferring: 0,
+                          recipient: "",
+                          address: item.address,
+                          amount: item.available,
+                          creator: item.creator,
+                          name: item.name,
+                          price: item.primaryPrice,
+                          symbol: item.symbol,
+                        };
+                        this.setState({
+                          modal: "transfer",
+                          transferOrder: newItem,
+                        });
+                        console.log(
+                          "transfer Order: ",
+                          this.state.transferOrder
+                        );
                       }}
-                    >TRANSFER TICKETS</button>
+                    >
+                      TRANSFER TICKETS
+                    </button>
                   </div>
-                  <hr style={{width: "100%", backgroundColor: "#666"}}/>
-              </div>
+                  <hr style={{ width: "100%", backgroundColor: "#666" }} />
+                </div>
               );
             } else return null;
           })}
@@ -408,54 +430,69 @@ class App extends Component {
             You do not have any active events
           </div>
         </div>
-      )
+      );
     }
   };
 
   myTicketsList = () => {
     const { myTickets } = this.state;
     if (this.state.isLoading) {
-      return <div style={{fontSize: "22px"}}>Loading information...</div>;
+      return <div style={{ fontSize: "22px" }}>Loading information...</div>;
     } else if (!(myTickets.length === 0)) {
       return (
         <Fragment>
           {myTickets.map((item, index) => {
-            console.log("item: ", item)
+            console.log("item: ", item);
             return (
-              <div style={{paddingBottom: "30px"}}>
+              <div style={{ paddingBottom: "30px" }}>
                 <div
-                  style={{ fontSize: "24px", fontWeight: "600", paddingBottom: "10px" }}
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "600",
+                    paddingBottom: "10px",
+                  }}
                 >
                   {item.name} ({item.symbol})
                 </div>
                 <div
-                  style={{display: "grid", 
+                  style={{
+                    display: "grid",
                     gridTemplateColumns: "180px 300px",
                     columnGap: "5px",
-                    fontSize: "16px"
+                    fontSize: "16px",
                   }}
                 >
-                  <div style={{textAlign: "right"}}>Ticket address:</div>
-                  <div style={{textAlign: "left"}}>{item.address}</div>
-                  <div style={{textAlign: "right"}}>Event creator:</div>
-                  <div style={{textAlign: "left"}}>{item.creator}</div>
-                  <div style={{textAlign: "right"}}>Tickets owned:</div>
-                  <div style={{textAlign: "left"}}>{item.amount}</div>
+                  <div style={{ textAlign: "right" }}>Ticket address:</div>
+                  <div style={{ textAlign: "left" }}>{item.address}</div>
+                  <div style={{ textAlign: "right" }}>Event creator:</div>
+                  <div style={{ textAlign: "left" }}>{item.creator}</div>
+                  <div style={{ textAlign: "right" }}>Tickets owned:</div>
+                  <div style={{ textAlign: "left" }}>{item.amount}</div>
                 </div>
-                <div style={{paddingLeft: "160px", paddingTop: "20px", paddingBottom: "30px"}}>
+                <div
+                  style={{
+                    paddingLeft: "160px",
+                    paddingTop: "20px",
+                    paddingBottom: "30px",
+                  }}
+                >
                   <button
                     className={classes.ButtonBlueSmall}
-
                     onClick={() => {
-                      let newItem = {...item}
+                      let newItem = { ...item };
                       newItem.transferring = 0;
                       newItem.recipient = "";
-                      this.setState({modal: "transfer", transferOrder: newItem})
-                      console.log("transfer Order: ", this.state.transferOrder)
+                      this.setState({
+                        modal: "transfer",
+                        transferOrder: newItem,
+                      });
+                      console.log("transfer Order: ", this.state.transferOrder);
                     }}
-                  >TRANSFER TICKETS</button>
+                  >
+                    TRANSFER TICKETS
+                  </button>
                 </div>
-                <hr style={{width: "100%", backgroundColor: "#666"}}/>
+                <hr style={{ width: "100%", backgroundColor: "#666" }} />
               </div>
             );
           })}
@@ -480,7 +517,7 @@ class App extends Component {
             You do not have any active tickets
           </div>
         </div>
-      )
+      );
     }
   };
 
@@ -533,7 +570,6 @@ class App extends Component {
     let symbolRegex2 = /^[a-zA-Z0-9]{3,6}$/;
     let initialRegex = /^[1,2,3,4,5,6,7,8,9][0-9]{0,5}$/;
     let priceRegex = /^[1,2,3,4,5,6,7,8,9][0-9]{0,18}$/;
-
 
     let name = event.target.name;
     let value = event.target.value;
@@ -598,15 +634,15 @@ class App extends Component {
 
     if (name === "recipient") {
       test = addressRegex.test(value);
-      console.log("Test result: ", test)
+      console.log("Test result: ", test);
       if (value.length === 0) {
         tempWarnings.recipient = "true";
       } else if (!test) {
-      console.log("Not a valid address")
+        console.log("Not a valid address");
         tempWarnings.recipient = "not a valid address";
       } else {
         tempWarnings.recipient = "";
-        console.log("ALL GOOD")
+        console.log("ALL GOOD");
       }
     }
     this.setState({ gaTransferWarnings: tempWarnings });
@@ -699,8 +735,10 @@ class App extends Component {
   };
 
   disableTransferButton = () => {
-    if (this.state.gaTransferWarnings.recipient ||
-    parseInt(this.state.transferOrder.transferring) === 0) {
+    if (
+      this.state.gaTransferWarnings.recipient ||
+      parseInt(this.state.transferOrder.transferring) === 0
+    ) {
       return true;
     } else {
       return false;
@@ -782,7 +820,7 @@ class App extends Component {
               }}
             ></input>
             {this.state.gaTicketWarnings.symbol &&
-              this.state.gaTicketWarnings.symbol !== "true"
+            this.state.gaTicketWarnings.symbol !== "true"
               ? this.warningMessage(this.state.gaTicketWarnings.symbol)
               : this.state.gaTicketWarnings.symbolRemaining
               ? this.remainingMessage(6, 3, this.state.newEvent.symbol)
@@ -821,7 +859,7 @@ class App extends Component {
               }}
             ></input>
             {this.state.gaTicketWarnings.initial &&
-              this.state.gaTicketWarnings.initial !== "true"
+            this.state.gaTicketWarnings.initial !== "true"
               ? this.warningMessage(this.state.gaTicketWarnings.initial)
               : this.state.gaTicketWarnings.initialRemaining
               ? this.remainingMessage(6, 3, this.state.newEvent.initial)
@@ -857,12 +895,11 @@ class App extends Component {
               onChange={(event) => {
                 this.updateNewEvent(event);
                 this.updateGaTicketWarnings(event);
-
               }}
             ></input>
             <div>
               {this.state.gaTicketWarnings.price &&
-                this.state.gaTicketWarnings.price !== "true"
+              this.state.gaTicketWarnings.price !== "true"
                 ? this.warningMessage(this.state.gaTicketWarnings.price)
                 : this.state.gaTicketWarnings.priceRemaining
                 ? this.remainingMessage(19, 6, this.state.newEvent.price)
@@ -870,7 +907,7 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div style={{ paddingTop: "20px"}}>
+        <div style={{ paddingTop: "20px" }}>
           <button
             className={
               this.disableTicketButton()
@@ -879,7 +916,7 @@ class App extends Component {
             }
             disabled={this.disableTicketButton()}
             onClick={() => {
-              this.setState({modal: "create"});
+              this.setState({ modal: "create" });
               //this.onClick();
             }}
           >
@@ -999,11 +1036,14 @@ class App extends Component {
           <li></li>
           <li
             onClick={() => {
-              console.log("display: ", this.state.display)
+              console.log("display: ", this.state.display);
               this.changeDisplay("events");
             }}
-            className={this.state.display === "events" ? classes.HeaderItemSelected : classes.HeaderItem}
-            
+            className={
+              this.state.display === "events"
+                ? classes.HeaderItemSelected
+                : classes.HeaderItem
+            }
           >
             All Events
           </li>
@@ -1011,7 +1051,11 @@ class App extends Component {
             onClick={() => {
               this.changeDisplay("create");
             }}
-            className={this.state.display === "create" ? classes.HeaderItemSelected : classes.HeaderItem}
+            className={
+              this.state.display === "create"
+                ? classes.HeaderItemSelected
+                : classes.HeaderItem
+            }
           >
             Issue Tickets
           </li>
@@ -1019,22 +1063,37 @@ class App extends Component {
             onClick={() => {
               this.changeDisplay("myEvents");
             }}
-            className={this.state.display === "myEvents" ? classes.HeaderItemSelected : classes.HeaderItem}
+            className={
+              this.state.display === "myEvents"
+                ? classes.HeaderItemSelected
+                : classes.HeaderItem
+            }
           >
             My Events
           </li>
           <li
             onClick={() => {
-              console.log("display before myTicket click: ", this.state.display)
+              console.log(
+                "display before myTicket click: ",
+                this.state.display
+              );
               this.changeDisplay("myTickets");
-              console.log("display after myTicket click: ", this.state.display)
+              console.log("display after myTicket click: ", this.state.display);
             }}
-            className={this.state.display === "myTickets" ? classes.HeaderItemSelected : classes.HeaderItem}
+            className={
+              this.state.display === "myTickets"
+                ? classes.HeaderItemSelected
+                : classes.HeaderItem
+            }
           >
             My Ticket Wallet
           </li>
           <li
-            className={this.state.display === "exchange" ? classes.HeaderItemSelected : classes.HeaderItem}
+            className={
+              this.state.display === "exchange"
+                ? classes.HeaderItemSelected
+                : classes.HeaderItem
+            }
             onClick={() => {
               this.changeDisplay("exchange");
             }}
@@ -1048,11 +1107,7 @@ class App extends Component {
 
   accountHeader = () => {
     if (this.state.isLoading) {
-      return (
-        <div className={classes.AccountHeader}>
-          Who are you?
-        </div>
-      );
+      return <div className={classes.AccountHeader}>Who are you?</div>;
     } else if (this.state.display !== "presentation") {
       return (
         <div className={classes.AccountHeader}>
@@ -1060,25 +1115,20 @@ class App extends Component {
         </div>
       );
     } else {
-      return (
-        <div className={classes.AccountHeader}>
-        </div>
-      )
+      return <div className={classes.AccountHeader}></div>;
     }
   };
 
   issueTicketsDisplay = () => {
-    if(this.state.display === "create") {
+    if (this.state.display === "create") {
       return (
         <div className={classes.PageDisplay}>
-          <div className={classes.PageTitle}>
-            Issue Tickets
-          </div>
+          <div className={classes.PageTitle}>Issue Tickets</div>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "480px 480px 480px",
-              columnGap: "20px"
+              columnGap: "20px",
             }}
           >
             <div>{this.createGATickets()}</div>
@@ -1086,20 +1136,20 @@ class App extends Component {
             <div>{this.createEventNFTs()}</div>
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   presentationDisplay = () => {
-    if(this.state.display === "presentation") {
+    if (this.state.display === "presentation") {
       return (
         <div className={classes.PageDisplay}>
           <div
             style={{
               paddingTop: "30px",
               paddingRight: "40px",
-              paddingBottom: "30px", 
-              paddingLeft: "40px"
+              paddingBottom: "30px",
+              paddingLeft: "40px",
             }}
           >
             <div
@@ -1112,12 +1162,19 @@ class App extends Component {
                 color: "#4792F7", //#76AFF9
               }}
               onClick={() => {
-                console.log("New screen")
+                console.log("New screen");
                 if (parseInt(this.state.presentationDisplay) === 20) {
-                  this.setState({presentationDisplay: 0});
+                  this.setState({ presentationDisplay: 0 });
                 } else {
-                this.setState({presentationDisplay: parseInt(this.state.presentationDisplay) + 1});}
-                console.log("presentation display: ", this.state.presentationDisplay);
+                  this.setState({
+                    presentationDisplay:
+                      parseInt(this.state.presentationDisplay) + 1,
+                  });
+                }
+                console.log(
+                  "presentation display: ",
+                  this.state.presentationDisplay
+                );
               }}
             >
               Blü Mün Event Tickets
@@ -1132,221 +1189,431 @@ class App extends Component {
                   fontWeight: "600",
                   textAlign: "center",
                   color: "#0000FF",
-              }}>A blockchain based ticketing application</div>) :
-              null
-            }
+                }}
+              >
+                A blockchain based ticketing application
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 1 && this.state.presentationDisplay < 4 ? (<div style={{paddingTop: "40px", 
-                  fontSize: "28px", textAlign: "center"}}>
-              Allows event creators to issue tickets and maintain complete control over its entire journey.
-            </div>) : null}
+            {this.state.presentationDisplay > 1 &&
+            this.state.presentationDisplay < 4 ? (
+              <div
+                style={{
+                  paddingTop: "40px",
+                  fontSize: "28px",
+                  textAlign: "center",
+                }}
+              >
+                Allows event creators to issue tickets and maintain complete
+                control over its entire journey.
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 2  && this.state.presentationDisplay < 4 ? (<div style={{paddingTop: "40px", 
-                  fontSize: "28px", textAlign: "center"}}>
-              Both the primary and secondary markets.
-            </div>) : null}
+            {this.state.presentationDisplay > 2 &&
+            this.state.presentationDisplay < 4 ? (
+              <div
+                style={{
+                  paddingTop: "40px",
+                  fontSize: "28px",
+                  textAlign: "center",
+                }}
+              >
+                Both the primary and secondary markets.
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 3 && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "40px",
-                  fontSize: "28px", textAlign: "center"}}>
-              Why Blockchain?
-            </div>) : null}
+            {this.state.presentationDisplay > 3 &&
+            this.state.presentationDisplay < 11 ? (
+              <div
+                style={{
+                  paddingTop: "40px",
+                  fontSize: "28px",
+                  textAlign: "center",
+                }}
+              >
+                Why Blockchain?
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 4 && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "40px", paddingLeft: "350px", 
-                  fontSize: "24px", textAlign: "left"}}>
-              Benefits for Event Creators.
-            </div>) : null}
+            {this.state.presentationDisplay > 4 &&
+            this.state.presentationDisplay < 11 ? (
+              <div
+                style={{
+                  paddingTop: "40px",
+                  paddingLeft: "350px",
+                  fontSize: "24px",
+                  textAlign: "left",
+                }}
+              >
+                Benefits for Event Creators.
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 5  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "400px", 
-                  fontSize: "24px", textAlign: "left"}}>
-              to mitigate the act of ticket scalping
-            </div>) : null}
+            {this.state.presentationDisplay > 5 &&
+            this.state.presentationDisplay < 11 ? (
+              <div
+                style={{
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                  fontSize: "24px",
+                  textAlign: "left",
+                }}
+              >
+                to mitigate the act of ticket scalping
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 6  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "400px", 
-                  fontSize: "24px", textAlign: "left"}}>
-              participate in any price markup realized in the secondary market
-            </div>) : null}
+            {this.state.presentationDisplay > 6 &&
+            this.state.presentationDisplay < 11 ? (
+              <div
+                style={{
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                  fontSize: "24px",
+                  textAlign: "left",
+                }}
+              >
+                participate in any price markup realized in the secondary market
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 7 && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "80px", paddingLeft: "350px", 
-                  fontSize: "24px", textAlign: "left"}}>
-              Benefits for Ticket Buyers.
-            </div>) : null}
+            {this.state.presentationDisplay > 7 &&
+            this.state.presentationDisplay < 11 ? (
+              <div
+                style={{
+                  paddingTop: "80px",
+                  paddingLeft: "350px",
+                  fontSize: "24px",
+                  textAlign: "left",
+                }}
+              >
+                Benefits for Ticket Buyers.
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 8  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "400px", 
-                  fontSize: "24px", textAlign: "left"}}>
-              eliminate any secondary market fees
-            </div>) : null}
+            {this.state.presentationDisplay > 8 &&
+            this.state.presentationDisplay < 11 ? (
+              <div
+                style={{
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                  fontSize: "24px",
+                  textAlign: "left",
+                }}
+              >
+                eliminate any secondary market fees
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 9  && this.state.presentationDisplay < 11 ? (<div style={{paddingTop: "20px", paddingLeft: "400px", 
-                  fontSize: "24px", textAlign: "left"}}>
-              potentially reduced secondary market ticket prices
-            </div>) : null}
+            {this.state.presentationDisplay > 9 &&
+            this.state.presentationDisplay < 11 ? (
+              <div
+                style={{
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                  fontSize: "24px",
+                  textAlign: "left",
+                }}
+              >
+                potentially reduced secondary market ticket prices
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 10 && this.state.presentationDisplay < 21 ? (<div style={{paddingTop: "40px",
-                  fontSize: "28px", textAlign: "center"}}>
-              Application overview
-            </div>) : null}
+            {this.state.presentationDisplay > 10 &&
+            this.state.presentationDisplay < 21 ? (
+              <div
+                style={{
+                  paddingTop: "40px",
+                  fontSize: "28px",
+                  textAlign: "center",
+                }}
+              >
+                Application overview
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 11 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "350px"}}>
-              Final application will allow event creators to:</div>) : null}
-            
-            {this.state.presentationDisplay > 12 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              issue, sell and manage general admission tickets (fungible ERC20)</div>) : null}
-            
-            {this.state.presentationDisplay > 13 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              issue, sell and manage assigned seating tickets (non-fungible ERC721)</div>) : null}
-            
-            {this.state.presentationDisplay > 14 && this.state.presentationDisplay < 16 ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              control the parameters around the reselling of tickets purchased</div>) : null}
+            {this.state.presentationDisplay > 11 &&
+            this.state.presentationDisplay < 16 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "40px",
+                  paddingLeft: "350px",
+                }}
+              >
+                Final application will allow event creators to:
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 15 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "40px", paddingLeft: "350px"}}>
-              Phase 1 consists of four different user screens:</div>) : null}
+            {this.state.presentationDisplay > 12 &&
+            this.state.presentationDisplay < 16 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                }}
+              >
+                issue, sell and manage general admission tickets (fungible
+                ERC20)
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 16 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              All Events: Ticket buyer can purchase general admission tickets</div>) : null}
+            {this.state.presentationDisplay > 13 &&
+            this.state.presentationDisplay < 16 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                }}
+              >
+                issue, sell and manage assigned seating tickets (non-fungible
+                ERC721)
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 17 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              Issue Tickets: Event creator can generate a general admission ticket offering</div>) : null}
+            {this.state.presentationDisplay > 14 &&
+            this.state.presentationDisplay < 16 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                }}
+              >
+                control the parameters around the reselling of tickets purchased
+              </div>
+            ) : null}
 
-            {this.state.presentationDisplay > 18 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              My Events: Event creator is provided a list of all ticket offerings they have created</div>) : null}
-              
-            {this.state.presentationDisplay > 19 && this.state.presentationDisplay < 21  ? (<div style={{fontSize: "24px", textAlign: "left", paddingTop: "20px", paddingLeft: "400px"}}>
-              My Ticket Wallet: Ticket buyer is provided a list of all the tickets they have purchased</div>) : null}
+            {this.state.presentationDisplay > 15 &&
+            this.state.presentationDisplay < 21 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "40px",
+                  paddingLeft: "350px",
+                }}
+              >
+                Phase 1 consists of four different user screens:
+              </div>
+            ) : null}
+
+            {this.state.presentationDisplay > 16 &&
+            this.state.presentationDisplay < 21 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                }}
+              >
+                All Events: Ticket buyer can purchase general admission tickets
+              </div>
+            ) : null}
+
+            {this.state.presentationDisplay > 17 &&
+            this.state.presentationDisplay < 21 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                }}
+              >
+                Issue Tickets: Event creator can generate a general admission
+                ticket offering
+              </div>
+            ) : null}
+
+            {this.state.presentationDisplay > 18 &&
+            this.state.presentationDisplay < 21 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                }}
+              >
+                My Events: Event creator is provided a list of all ticket
+                offerings they have created
+              </div>
+            ) : null}
+
+            {this.state.presentationDisplay > 19 &&
+            this.state.presentationDisplay < 21 ? (
+              <div
+                style={{
+                  fontSize: "24px",
+                  textAlign: "left",
+                  paddingTop: "20px",
+                  paddingLeft: "400px",
+                }}
+              >
+                My Ticket Wallet: Ticket buyer is provided a list of all the
+                tickets they have purchased
+              </div>
+            ) : null}
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   eventsDisplay = () => {
-    if(this.state.display === "events") {
+    if (this.state.display === "events") {
       return (
         <div className={classes.PageDisplay}>
-          <div className={classes.PageTitle}>
-            All Events
-          </div>
+          <div className={classes.PageTitle}>All Events</div>
           <div
             style={{
               paddingTop: "30px",
               paddingRight: "40px",
-              paddingBottom: "30px", 
-              paddingLeft: "40px"
+              paddingBottom: "30px",
+              paddingLeft: "40px",
             }}
           >
-            <section className={classes.Events}>
-              {this.eventList()}
-            </section>
+            <section className={classes.Events}>{this.eventList()}</section>
           </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   exchangeDisplay = () => {
-    if(this.state.display === "exchange") {
+    if (this.state.display === "exchange") {
       return (
         <div className={classes.PageDisplay}>
-          <div className={classes.PageTitle}>
-            Ticket Exchange
-          </div>
+          <div className={classes.PageTitle}>Ticket Exchange</div>
           <div>{this.ticketExchange()}</div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   myTicketsDisplay = () => {
-    if(this.state.display === "myTickets") {
+    if (this.state.display === "myTickets") {
       return (
         <div className={classes.PageDisplay}>
           <div className={classes.PageTitle}>
-            My Ticket Wallet <span style={{fontSize: "20px", color: "red"}}>(does not include tickets from events you created)</span>
+            My Ticket Wallet{" "}
+            <span style={{ fontSize: "20px", color: "red" }}>
+              (does not include tickets from events you created)
+            </span>
           </div>
           <div
             style={{
               width: "800px",
               paddingTop: "30px",
               paddingRight: "40px",
-              paddingBottom: "30px", 
-              paddingLeft: "40px"
-            }}>{this.myTicketsList()}</div>
+              paddingBottom: "30px",
+              paddingLeft: "40px",
+            }}
+          >
+            {this.myTicketsList()}
+          </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   myEventsDisplay = () => {
-    if(this.state.display === "myEvents") {
+    if (this.state.display === "myEvents") {
       return (
         <div className={classes.PageDisplay}>
-          <div className={classes.PageTitle}>
-            My Events
-          </div>
+          <div className={classes.PageTitle}>My Events</div>
           <div
             style={{
               width: "800px",
               paddingTop: "30px",
               paddingRight: "40px",
-              paddingBottom: "30px", 
-              paddingLeft: "40px"
-            }}>{this.myEventsList()}</div>
+              paddingBottom: "30px",
+              paddingLeft: "40px",
+            }}
+          >
+            {this.myEventsList()}
+          </div>
         </div>
-      )
-    } else return null
-  }
+      );
+    } else return null;
+  };
 
   transferModalBody = () => {
     const { web3, accounts, transferOrder } = this.state;
-      const gaEvent = new web3.eth.Contract(
-        GAEventTicket.abi,
-        transferOrder.address
-      );
-    
-    let ticketsArray = [0]
+    const gaEvent = new web3.eth.Contract(
+      GAEventTicket.abi,
+      transferOrder.address
+    );
+
+    let ticketsArray = [0];
     for (let i = 1; i <= transferOrder.amount; i++) {
       ticketsArray.push(i);
     }
-    
-    if(this.state.modalSpinner) {
-     return (
+
+    if (this.state.modalSpinner) {
+      return (
         <Fragment>
-          <div style={{fontSize: "20px", paddingTop: "60px"}}>Your tickets are being transferred</div>
-          <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
-          <div style={{fontSize: "20px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
+          <div style={{ fontSize: "20px", paddingTop: "60px" }}>
+            Your tickets are being transferred
+          </div>
+          <div style={{ height: "80px", paddingTop: "10px" }}>
+            <Spinner />
+          </div>
+          <div style={{ fontSize: "20px", paddingTop: "100px" }}>
+            This can take up to 60 seconds
+          </div>
         </Fragment>
-      )
+      );
     } else if (this.state.transactionSuccess === "none") {
-            return (
+      return (
         <Fragment>
-          <div style={{fontSize: "34px"}}>Ticket Transfer</div>
-          <div style={{fontSize: "24px"}}>{transferOrder.name}</div>
+          <div style={{ fontSize: "34px" }}>Ticket Transfer</div>
+          <div style={{ fontSize: "24px" }}>{transferOrder.name}</div>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "50% 48%",
               columnGap: "2%",
-              fontSize: "16px"
-            }}>
-              <div style={{textAlign: "right"}}>
-                <div style={{fontSize: "16px"}}>Ticket Symbol:</div>
-                <div style={{fontSize: "16px"}}>Tickets Owned:</div>
-                <div style={{fontSize: "16px"}}>Ticket Price:</div>
-              </div>
-              <div style={{textAlign: "left"}}>
-            <div style={{fontSize: "16px"}}>{transferOrder.symbol}</div>
-            <div style={{fontSize: "16px"}}>{transferOrder.amount}</div>
-            <div style={{fontSize: "16px"}}>{transferOrder.price} wei</div>
-              </div>
+              fontSize: "16px",
+            }}
+          >
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: "16px" }}>Ticket Symbol:</div>
+              <div style={{ fontSize: "16px" }}>Tickets Owned:</div>
+              <div style={{ fontSize: "16px" }}>Ticket Price:</div>
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: "16px" }}>{transferOrder.symbol}</div>
+              <div style={{ fontSize: "16px" }}>{transferOrder.amount}</div>
+              <div style={{ fontSize: "16px" }}>{transferOrder.price} wei</div>
+            </div>
           </div>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "60% 38%",
               columnGap: "2%",
-              paddingTop: "15px"
-            }}>
-            <div style={{fontSize: "20px", textAlign: "right", paddingTop: "8px"}}># Tickets to Transfer</div>
-            <div style={{fontSize: "20px", textAlign: "left"}}>
+              paddingTop: "15px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "20px",
+                textAlign: "right",
+                paddingTop: "8px",
+              }}
+            >
+              # Tickets to Transfer
+            </div>
+            <div style={{ fontSize: "20px", textAlign: "left" }}>
               <select
                 style={{
                   padding: "9px 5px",
@@ -1354,7 +1621,8 @@ class App extends Component {
                   boxSizing: "borderBox",
                   width: "105px",
                   lineHeight: "1.75",
-                  cursor: "pointer"}}
+                  cursor: "pointer",
+                }}
                 type="text"
                 id="input box time selection"
                 value={transferOrder.transferring}
@@ -1362,170 +1630,241 @@ class App extends Component {
                 onChange={(event) => {
                   this.updateTransferOrder(event);
                   this.updateGaTransferWarnings(event);
-                  console.log("transfer order: ", this.state.transferOrder)
+                  console.log("transfer order: ", this.state.transferOrder);
                 }}
                 required
-              >{ticketsArray.map(number => (<option>{number}</option>))}</select>
+              >
+                {ticketsArray.map((number) => (
+                  <option>{number}</option>
+                ))}
+              </select>
             </div>
-            
           </div>
-        <div>
-          <div className={classes.InputBoxLabel}>
-            Recipient address<span style={{ color: "red" }}>*</span>
-          </div>
-          <div className={classes.InputBox}>
-            <input
-              className={
-                this.state.gaTransferWarnings.recipient
-                  ? classes.InputBoxContentSmallError
-                  : classes.InputBoxContentSmall
-              }
-              onFocus={() => {
-                let tempWarnings = { ...this.state.gaTransferWarnings };
-                tempWarnings.recipientRemaining = true;
-                this.setState({ gaTransferWarnings: tempWarnings });
-              }}
-              onBlur={() => {
-                let tempWarnings = { ...this.state.gaTransferWarnings };
-                tempWarnings.recipientRemaining = false;
-                this.setState({ gaTransferWarnings: tempWarnings });
-              }}
-              type="text"
-              maxLength="42"
-              placeholder="42 hexadecimal address starting with 0x"
-              name="recipient"
-              value={this.state.transferOrder.recipient}
-              onChange={(event) => {
-                this.updateTransferOrder(event);
-                this.updateGaTransferWarnings(event);
-                console.log("transfer order: ", this.state.transferOrder)
-              }}
-            ></input>
-            <div>
-              {this.state.gaTransferWarnings.recipient &&
+          <div>
+            <div className={classes.InputBoxLabel}>
+              Recipient address<span style={{ color: "red" }}>*</span>
+            </div>
+            <div className={classes.InputBox}>
+              <input
+                className={
+                  this.state.gaTransferWarnings.recipient
+                    ? classes.InputBoxContentSmallError
+                    : classes.InputBoxContentSmall
+                }
+                onFocus={() => {
+                  let tempWarnings = { ...this.state.gaTransferWarnings };
+                  tempWarnings.recipientRemaining = true;
+                  this.setState({ gaTransferWarnings: tempWarnings });
+                }}
+                onBlur={() => {
+                  let tempWarnings = { ...this.state.gaTransferWarnings };
+                  tempWarnings.recipientRemaining = false;
+                  this.setState({ gaTransferWarnings: tempWarnings });
+                }}
+                type="text"
+                maxLength="42"
+                placeholder="42 hexadecimal address starting with 0x"
+                name="recipient"
+                value={this.state.transferOrder.recipient}
+                onChange={(event) => {
+                  this.updateTransferOrder(event);
+                  this.updateGaTransferWarnings(event);
+                  console.log("transfer order: ", this.state.transferOrder);
+                }}
+              ></input>
+              <div>
+                {this.state.gaTransferWarnings.recipient &&
                 this.state.gaTransferWarnings.recipient !== "true"
-                ? this.warningMessage(this.state.gaTransferWarnings.recipient)
-                : this.state.gaTransferWarnings.recipientRemaining
-                ? this.remainingMessage(42, 10, this.state.transferOrder.recipient)
-                : null}
+                  ? this.warningMessage(this.state.gaTransferWarnings.recipient)
+                  : this.state.gaTransferWarnings.recipientRemaining
+                  ? this.remainingMessage(
+                      42,
+                      10,
+                      this.state.transferOrder.recipient
+                    )
+                  : null}
               </div>
+            </div>
           </div>
-        </div>
 
-        <div style={{paddingTop: "20px"}}>
-          <button
-            className={
-              this.disableTransferButton()
-                ? classes.ButtonBlueSmallOpac
-                : classes.ButtonBlueSmall
-            }
-            disabled={this.disableTransferButton()}
-            onClick={async () => {
-              this.setState({modalSpinner: true});
-              console.log("transferOrder: ", this.state.transferOrder.transferring)
-
-              try {
-                await gaEvent.methods
-                  .transfer(this.state.transferOrder.recipient, this.state.transferOrder.transferring)
-                  .send({ from: accounts[0]});
-                  this.setState({modalSpinner: false, transactionSuccess: "success"})
-
-              } catch (error) {
-                console.log("Something happened")
-                this.setState({modalSpinner: false, transactionSuccess: "failure"})
+          <div style={{ paddingTop: "20px" }}>
+            <button
+              className={
+                this.disableTransferButton()
+                  ? classes.ButtonBlueSmallOpac
+                  : classes.ButtonBlueSmall
               }
-            }}
-          >EXECUTE TRANSFER</button>
-        </div>
-        <div style={{paddingTop: "20px"}}>
-          <button
-            className={classes.ButtonGreySmall}
-            onClick={() => {
-              this.setState({ transferOrder: {}, modal: "none", modalSpinner: false});
-          }}>CANCEL TRANSFER</button>
-        </div>
-      </Fragment>
-      ) 
-    } else if (this.state.transactionSuccess === "failure") {
-      return (
-        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your tickets were not transferred
-          <div style={{paddingTop: "40px"}}>
+              disabled={this.disableTransferButton()}
+              onClick={async () => {
+                this.setState({ modalSpinner: true });
+                console.log(
+                  "transferOrder: ",
+                  this.state.transferOrder.transferring
+                );
+
+                try {
+                  await gaEvent.methods
+                    .transfer(
+                      this.state.transferOrder.recipient,
+                      this.state.transferOrder.transferring
+                    )
+                    .send({ from: accounts[0] });
+                  this.setState({
+                    modalSpinner: false,
+                    transactionSuccess: "success",
+                  });
+                } catch (error) {
+                  console.log("Something happened");
+                  this.setState({
+                    modalSpinner: false,
+                    transactionSuccess: "failure",
+                  });
+                }
+              }}
+            >
+              EXECUTE TRANSFER
+            </button>
+          </div>
+          <div style={{ paddingTop: "20px" }}>
             <button
               className={classes.ButtonGreySmall}
               onClick={() => {
-                this.setState({ transferOrder: {}, modal: "none", modalSpinner: false, transactionSuccess: "none"});
-            }}>CONTINUE</button>
+                this.setState({
+                  transferOrder: {},
+                  modal: "none",
+                  modalSpinner: false,
+                });
+              }}
+            >
+              CANCEL TRANSFER
+            </button>
           </div>
-        </div>
-      )
-    } else {
+        </Fragment>
+      );
+    } else if (this.state.transactionSuccess === "failure") {
       return (
-        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transfer was successfull
-          <div style={{paddingTop: "40px"}}>
+        <div
+          style={{
+            fontSize: "20px",
+            paddingTop: "80px",
+            paddingBottom: "40px",
+          }}
+        >
+          Your tickets were not transferred
+          <div style={{ paddingTop: "40px" }}>
             <button
               className={classes.ButtonGreySmall}
-              onClick={async() => {
-              this.retrieveEventData();
-              this.setState({ transferOrder: {}, modal: "none", modalSpinner: false, transactionSuccess: "none"});
-            }
-            }>CONTINUE</button>
+              onClick={() => {
+                this.setState({
+                  transferOrder: {},
+                  modal: "none",
+                  modalSpinner: false,
+                  transactionSuccess: "none",
+                });
+              }}
+            >
+              CONTINUE
+            </button>
           </div>
         </div>
-      )
+      );
+    } else {
+      return (
+        <div
+          style={{
+            fontSize: "20px",
+            paddingTop: "80px",
+            paddingBottom: "40px",
+          }}
+        >
+          Your transfer was successfull
+          <div style={{ paddingTop: "40px" }}>
+            <button
+              className={classes.ButtonGreySmall}
+              onClick={async () => {
+                this.retrieveEventData();
+                this.setState({
+                  transferOrder: {},
+                  modal: "none",
+                  modalSpinner: false,
+                  transactionSuccess: "none",
+                });
+              }}
+            >
+              CONTINUE
+            </button>
+          </div>
+        </div>
+      );
     }
-  }
+  };
 
   orderModalBody = () => {
     const { web3, accounts, newOrder } = this.state;
-      const gaEvent = new web3.eth.Contract(
-        GAEventTicket.abi,
-        newOrder.address
-      );
+    const gaEvent = new web3.eth.Contract(GAEventTicket.abi, newOrder.address);
 
-    let ticketsArray = [0]
+    let ticketsArray = [0];
     for (let i = 1; i <= newOrder.available; i++) {
       ticketsArray.push(i);
     }
 
-    if(this.state.modalSpinner) {
+    if (this.state.modalSpinner) {
       return (
         <Fragment>
-          <div style={{fontSize: "20px", paddingTop: "60px"}}>Your order is being processed</div>
-          <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
-          <div style={{fontSize: "20px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
+          <div style={{ fontSize: "20px", paddingTop: "60px" }}>
+            Your order is being processed
+          </div>
+          <div style={{ height: "80px", paddingTop: "10px" }}>
+            <Spinner />
+          </div>
+          <div style={{ fontSize: "20px", paddingTop: "100px" }}>
+            This can take up to 60 seconds
+          </div>
         </Fragment>
-      )
+      );
     } else if (this.state.transactionSuccess === "none") {
       return (
         <Fragment>
-          <div style={{fontSize: "34px"}}>Ticket Order</div>
-          <div style={{fontSize: "20px"}}>{newOrder.name}</div>
+          <div style={{ fontSize: "34px" }}>Ticket Order</div>
+          <div style={{ fontSize: "20px" }}>{newOrder.name}</div>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "50% 48%",
-              columnGap: "2%"
-            }}>
-              <div style={{textAlign: "right"}}>
-                <div style={{fontSize: "16px"}}>Ticket Symbol:</div>
-                <div style={{fontSize: "16px"}}>Tickets Available:</div>
-                <div style={{fontSize: "16px"}}>Ticket Price:</div>
+              columnGap: "2%",
+            }}
+          >
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: "16px" }}>Ticket Symbol:</div>
+              <div style={{ fontSize: "16px" }}>Tickets Available:</div>
+              <div style={{ fontSize: "16px" }}>Ticket Price:</div>
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: "16px" }}>{newOrder.symbol}</div>
+              <div style={{ fontSize: "16px" }}>{newOrder.available}</div>
+              <div style={{ fontSize: "16px" }}>
+                {newOrder.primaryPrice} wei
               </div>
-              <div style={{textAlign: "left"}}>
-            <div style={{fontSize: "16px"}}>{newOrder.symbol}</div>
-            <div style={{fontSize: "16px"}}>{newOrder.available}</div>
-            <div style={{fontSize: "16px"}}>{newOrder.primaryPrice} wei</div>
-              </div>
+            </div>
           </div>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "60% 38%",
               columnGap: "2%",
-              paddingTop: "15px"
-            }}>
-            <div style={{fontSize: "20px", textAlign: "right", paddingTop: "8px"}}>Select Ticket Quantity</div>
-            <div style={{fontSize: "20px", textAlign: "left"}}>
+              paddingTop: "15px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "20px",
+                textAlign: "right",
+                paddingTop: "8px",
+              }}
+            >
+              Select Ticket Quantity
+            </div>
+            <div style={{ fontSize: "20px", textAlign: "left" }}>
               <select
                 style={{
                   padding: "9px 5px",
@@ -1533,24 +1872,33 @@ class App extends Component {
                   boxSizing: "borderBox",
                   width: "105px",
                   lineHeight: "1.75",
-                  cursor: "pointer"}}
+                  cursor: "pointer",
+                }}
                 type="text"
                 id="input box time selection"
                 value={newOrder.quantity}
                 name="tickets"
                 onChange={(event) => {
-                  let tempOrder = {...newOrder};
+                  let tempOrder = { ...newOrder };
                   tempOrder.quantity = event.target.value;
-                  this.setState({newOrder: tempOrder})
+                  this.setState({ newOrder: tempOrder });
                 }}
                 required
-              >{ticketsArray.map(number => (<option>{number}</option>))}</select>
+              >
+                {ticketsArray.map((number) => (
+                  <option>{number}</option>
+                ))}
+              </select>
             </div>
-            
-            <div style={{fontSize: "20px", textAlign: "right"}}>Purchase Amount:</div>
-            <div style={{fontSize: "20px", textAlign: "left"}}>{newOrder.quantity * newOrder.primaryPrice} wei</div>
+
+            <div style={{ fontSize: "20px", textAlign: "right" }}>
+              Purchase Amount:
+            </div>
+            <div style={{ fontSize: "20px", textAlign: "left" }}>
+              {newOrder.quantity * newOrder.primaryPrice} wei
+            </div>
           </div>
-          <div style={{paddingTop: "20px"}}>
+          <div style={{ paddingTop: "20px" }}>
             <button
               className={
                 parseInt(this.state.newOrder.quantity) === 0
@@ -1559,8 +1907,8 @@ class App extends Component {
               }
               disabled={parseInt(this.state.newOrder.quantity) === 0}
               onClick={async () => {
-                this.setState({modalSpinner: true});
-                let tempOrder = {...this.state.newOrder};
+                this.setState({ modalSpinner: true });
+                let tempOrder = { ...this.state.newOrder };
 
                 let value = tempOrder.quantity * tempOrder.primaryPrice;
 
@@ -1568,95 +1916,145 @@ class App extends Component {
                   await gaEvent.methods
                     .primaryTransfer(tempOrder.quantity)
                     .send({ from: accounts[0], value: value });
-                    this.setState({modalSpinner: false, transactionSuccess: "success"})
-
+                  this.setState({
+                    modalSpinner: false,
+                    transactionSuccess: "success",
+                  });
                 } catch (error) {
-                  console.log("Something happened")
-                  this.setState({modalSpinner: false, transactionSuccess: "failure"})
+                  console.log("Something happened");
+                  this.setState({
+                    modalSpinner: false,
+                    transactionSuccess: "failure",
+                  });
                 }
               }}
-            >SUBMIT ORDER</button>
+            >
+              SUBMIT ORDER
+            </button>
           </div>
-          <div style={{paddingTop: "20px"}}>
+          <div style={{ paddingTop: "20px" }}>
             <button
               className={classes.ButtonGreySmall}
               onClick={() => {
-                this.setState({ newOrder: {}, modal: "none", modalSpinner: false});
-            }}>CANCEL ORDER</button>
+                this.setState({
+                  newOrder: {},
+                  modal: "none",
+                  modalSpinner: false,
+                });
+              }}
+            >
+              CANCEL ORDER
+            </button>
           </div>
         </Fragment>
-      ) 
+      );
     } else if (this.state.transactionSuccess === "failure") {
       return (
-        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was not successfull
-          <div style={{paddingTop: "40px"}}>
+        <div
+          style={{
+            fontSize: "20px",
+            paddingTop: "80px",
+            paddingBottom: "40px",
+          }}
+        >
+          Your transaction was not successfull
+          <div style={{ paddingTop: "40px" }}>
             <button
               className={classes.ButtonGreySmall}
               onClick={() => {
-                this.setState({ newOrder: {}, modal: "none", modalSpinner: false, transactionSuccess: "none"});
-
-            }}>CONTINUE</button>
+                this.setState({
+                  newOrder: {},
+                  modal: "none",
+                  modalSpinner: false,
+                  transactionSuccess: "none",
+                });
+              }}
+            >
+              CONTINUE
+            </button>
           </div>
         </div>
-      )
+      );
     } else {
       return (
-        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
-          <div style={{paddingTop: "40px"}}>
+        <div
+          style={{
+            fontSize: "20px",
+            paddingTop: "80px",
+            paddingBottom: "40px",
+          }}
+        >
+          Your transaction was successfull
+          <div style={{ paddingTop: "40px" }}>
             <button
               className={classes.ButtonGreySmall}
-              onClick={async() => {
+              onClick={async () => {
                 this.retrieveEventData();
-                this.setState({ newOrder: {}, display: "myTickets", modal: "none", modalSpinner: false, transactionSuccess: "none"});
-              }
-            }>CONTINUE</button>
+                this.setState({
+                  newOrder: {},
+                  display: "myTickets",
+                  modal: "none",
+                  modalSpinner: false,
+                  transactionSuccess: "none",
+                });
+              }}
+            >
+              CONTINUE
+            </button>
           </div>
         </div>
-      )
+      );
     }
-  }
+  };
 
   createModalBody = () => {
     const { accounts, factory, newEvent } = this.state;
-    if(this.state.modalSpinner) {
+    if (this.state.modalSpinner) {
       return (
         <Fragment>
-          <div style={{fontSize: "20px", paddingTop: "60px"}}>Your order is being processed</div>
-          <div style={{height: "80px", paddingTop: "10px"}}><Spinner/></div>
-          <div style={{fontSize: "20px", paddingTop: "100px"}}>This can take up to 60 seconds</div>
+          <div style={{ fontSize: "20px", paddingTop: "60px" }}>
+            Your order is being processed
+          </div>
+          <div style={{ height: "80px", paddingTop: "10px" }}>
+            <Spinner />
+          </div>
+          <div style={{ fontSize: "20px", paddingTop: "100px" }}>
+            This can take up to 60 seconds
+          </div>
         </Fragment>
-      )
+      );
     } else if (this.state.transactionSuccess === "none") {
       return (
         <Fragment>
-          <div style={{fontSize: "30px"}}>GA Ticket Creation</div>
-          <div style={{fontSize: "26px"}}>{newEvent.name}</div>
+          <div style={{ fontSize: "30px" }}>GA Ticket Creation</div>
+          <div style={{ fontSize: "26px" }}>{newEvent.name}</div>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "50% 48%",
               columnGap: "2%",
               paddingTop: "5px",
-              fontSize: "16px"
-            }}>
-              <div style={{textAlign: "right"}}>
-                <div style={{fontSize: "20px"}}>Ticket Symbol:</div>
-                <div style={{fontSize: "20px"}}>Ticket Quantity:</div>
-                <div style={{fontSize: "20px"}}>Ticket Price:</div>
-              </div>
-              <div style={{textAlign: "left"}}>
-                <div style={{fontSize: "20px"}}>{newEvent.symbol}</div>
-                <div style={{fontSize: "20px"}}>{newEvent.initial}</div>
-                <div style={{fontSize: "20px"}}>{newEvent.price} wei</div>
-              </div>
+              fontSize: "16px",
+            }}
+          >
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontSize: "20px" }}>Ticket Symbol:</div>
+              <div style={{ fontSize: "20px" }}>Ticket Quantity:</div>
+              <div style={{ fontSize: "20px" }}>Ticket Price:</div>
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <div style={{ fontSize: "20px" }}>{newEvent.symbol}</div>
+              <div style={{ fontSize: "20px" }}>{newEvent.initial}</div>
+              <div style={{ fontSize: "20px" }}>{newEvent.price} wei</div>
+            </div>
           </div>
-          <div style={{paddingTop: "20px"}}>
+          <div style={{ paddingTop: "20px" }}>
             <button
               className={classes.ButtonGreenSmall}
               disabled={false}
               onClick={async () => {
-                this.setState({modalSpinner: true});
-                let tempEvent = {...this.state.newEvent};
+                this.setState({ modalSpinner: true });
+                let tempEvent = { ...this.state.newEvent };
 
                 // use "web3" instance to get user accounts associated with given provider
                 //const accounts = await web3.eth.getAccounts();
@@ -1666,90 +2064,124 @@ class App extends Component {
                 try {
                   // launches a GATicket event
                   await factory.methods
-                  .createGATickets(tempEvent.name, tempEvent.symbol, tempEvent.initial, tempEvent.price)
-                  .send({ from: accounts[0] });
-                  this.setState({modalSpinner: false, transactionSuccess: "success"})
+                    .createGATickets(
+                      tempEvent.name,
+                      tempEvent.symbol,
+                      tempEvent.initial,
+                      tempEvent.price
+                    )
+                    .send({ from: accounts[0] });
+                  this.setState({
+                    modalSpinner: false,
+                    transactionSuccess: "success",
+                  });
                 } catch (error) {
-                  console.log("Something happened")
-                  this.setState({modalSpinner: false, transactionSuccess: "failure"})
+                  console.log("Something happened");
+                  this.setState({
+                    modalSpinner: false,
+                    transactionSuccess: "failure",
+                  });
                 }
               }}
-            >EXECUTE TICKET CREATION</button>
+            >
+              EXECUTE TICKET CREATION
+            </button>
           </div>
-          <div style={{paddingTop: "20px"}}>
+          <div style={{ paddingTop: "20px" }}>
             <button
               className={classes.ButtonRedSmall}
               onClick={() => {
-                this.setState({ modal: "none", modalSpinner: false});
-            }}>EDIT TICKET CREATION</button>
+                this.setState({ modal: "none", modalSpinner: false });
+              }}
+            >
+              EDIT TICKET CREATION
+            </button>
           </div>
-          <div style={{paddingTop: "20px"}}>
+          <div style={{ paddingTop: "20px" }}>
             <button
               className={classes.ButtonGreySmall}
               onClick={() => {
-              this.setState({
-                newEvent: { name: "", symbol: "", initial: "", price: "" },
-                gaTicketWarnings: {
-                  nameRemaining: false,
-                  name: "true",
-                  symbolRemaining: false,
-                  symbol: "true",
-                  initialRemaining: false,
-                  initial: "true",
-                  priceRemaining: false,
-                  price: "true",
-                },
-                modal: "none",
-                modalSpinner: false,
-                transactionSuccess: "none"
-              });
-            }}>CANCEL TICKET CREATION</button>
+                this.setState({
+                  newEvent: { name: "", symbol: "", initial: "", price: "" },
+                  gaTicketWarnings: {
+                    nameRemaining: false,
+                    name: "true",
+                    symbolRemaining: false,
+                    symbol: "true",
+                    initialRemaining: false,
+                    initial: "true",
+                    priceRemaining: false,
+                    price: "true",
+                  },
+                  modal: "none",
+                  modalSpinner: false,
+                  transactionSuccess: "none",
+                });
+              }}
+            >
+              CANCEL TICKET CREATION
+            </button>
           </div>
         </Fragment>
-      ) 
+      );
     } else if (this.state.transactionSuccess === "failure") {
       return (
-        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was not successfull
-          <div style={{paddingTop: "40px"}}>
+        <div
+          style={{
+            fontSize: "20px",
+            paddingTop: "80px",
+            paddingBottom: "40px",
+          }}
+        >
+          Your transaction was not successfull
+          <div style={{ paddingTop: "40px" }}>
             <button
               className={classes.ButtonGreySmall}
               onClick={() => {
-
-              this.setState({
-                newEvent: { name: "", symbol: "", initial: "", price: "" },
-                gaTicketWarnings: {
-                  nameRemaining: false,
-                  name: "true",
-                  symbolRemaining: false,
-                  symbol: "true",
-                  initialRemaining: false,
-                  initial: "true",
-                  priceRemaining: false,
-                  price: "true",
-                },
-                modal: "none",
-                modalSpinner: false,
-                transactionSuccess: "none"
-              });
-
-            }}>CONTINUE</button>
+                this.setState({
+                  newEvent: { name: "", symbol: "", initial: "", price: "" },
+                  gaTicketWarnings: {
+                    nameRemaining: false,
+                    name: "true",
+                    symbolRemaining: false,
+                    symbol: "true",
+                    initialRemaining: false,
+                    initial: "true",
+                    priceRemaining: false,
+                    price: "true",
+                  },
+                  modal: "none",
+                  modalSpinner: false,
+                  transactionSuccess: "none",
+                });
+              }}
+            >
+              CONTINUE
+            </button>
           </div>
         </div>
-      )
+      );
     } else {
       return (
-        <div style={{fontSize: "20px", paddingTop: "80px", paddingBottom: "40px"}}>Your transaction was successfull
-          <div style={{paddingTop: "40px"}}>
+        <div
+          style={{
+            fontSize: "20px",
+            paddingTop: "80px",
+            paddingBottom: "40px",
+          }}
+        >
+          Your transaction was successfull
+          <div style={{ paddingTop: "40px" }}>
             <button
               className={classes.ButtonGreySmall}
-              onClick={async() => {
+              onClick={async () => {
                 this.retrieveEventData();
                 this.setState({
                   newEvent: { name: "", symbol: "", initial: "", price: "" },
                   display: "myEvents",
                   modal: "none",
                   transactionSuccess: "none",
-                  modalSpinner: false, 
+                  modalSpinner: false,
                   gaTicketWarnings: {
                     nameRemaining: false,
                     name: "true",
@@ -1761,74 +2193,85 @@ class App extends Component {
                     price: "true",
                   },
                 });
-              }
-            }>CONTINUE</button>
+              }}
+            >
+              CONTINUE
+            </button>
           </div>
         </div>
-      )
+      );
     }
-  }
+  };
 
-  createModal =  () => {
-    if(this.state.modal === "create") {
+  createModal = () => {
+    if (this.state.modal === "create") {
       return (
         <Fragment>
           <div className={classes.Backdrop}></div>
           <div
             style={{
-              transform: this.state.modal === "create" ? "translateY(0)" : "translateY(-100vh)",
-              opacity: this.state.modal === "create" ? "1" : "0", height: "450px"
+              transform:
+                this.state.modal === "create"
+                  ? "translateY(0)"
+                  : "translateY(-100vh)",
+              opacity: this.state.modal === "create" ? "1" : "0",
+              height: "450px",
             }}
             className={classes.Modal}
           >
             {this.createModalBody()}
           </div>
         </Fragment>
-      )
-    } else
-      return null;
-  }
+      );
+    } else return null;
+  };
 
-  orderModal =  () => {
-    if(this.state.modal === "buy") {
+  orderModal = () => {
+    if (this.state.modal === "buy") {
       return (
         <Fragment>
           <div className={classes.Backdrop}></div>
           <div
             style={{
-              transform: this.state.modal === "buy" ? "translateY(0)" : "translateY(-100vh)",
-              opacity: this.state.modal === "buy" ? "1" : "0", height: "450px"
+              transform:
+                this.state.modal === "buy"
+                  ? "translateY(0)"
+                  : "translateY(-100vh)",
+              opacity: this.state.modal === "buy" ? "1" : "0",
+              height: "450px",
             }}
             className={classes.Modal}
           >
             {this.orderModalBody()}
           </div>
         </Fragment>
-      )
-    } else
-      return null;
-  }
+      );
+    } else return null;
+  };
 
-  transferModal =  () => {
-    if(this.state.modal === "transfer") {
-      console.log("transfer order: ", this.state.transferOrder)
+  transferModal = () => {
+    if (this.state.modal === "transfer") {
+      console.log("transfer order: ", this.state.transferOrder);
       return (
         <Fragment>
           <div className={classes.Backdrop}></div>
           <div
             style={{
-              transform: this.state.modal === "transfer" ? "translateY(0)" : "translateY(-100vh)",
-              opacity: this.state.modal === "transfer" ? "1" : "0", height: "500px"
+              transform:
+                this.state.modal === "transfer"
+                  ? "translateY(0)"
+                  : "translateY(-100vh)",
+              opacity: this.state.modal === "transfer" ? "1" : "0",
+              height: "500px",
             }}
             className={classes.Modal}
           >
             {this.transferModalBody()}
           </div>
         </Fragment>
-      )
-    } else
-      return null;
-  }
+      );
+    } else return null;
+  };
 
   render() {
     return (
