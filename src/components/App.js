@@ -9,7 +9,7 @@ import Logo from "./Assets/blu_mun.jpeg";
 
 import classes from "./App.module.css";
 
-// Completes Phase 1 of Overall Project
+// Extends from Phase 1 build
 class App extends Component {
   state = {
     isLoading: true,
