@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
-import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+
+//import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 // ----------------------------------------------------------------------------
 // ERC Token Standard #20 Interface
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
 // ----------------------------------------------------------------------------
 
-contract ERC20Interface {
+/*contract ERC20Interface {
     // Public state variables that automatic receive a getter() function
     // OPTIONAL: function name() public view returns (string memory name);
     string public name;
@@ -50,13 +51,15 @@ contract ERC20Interface {
         uint256 _value
     );
 }
+*/
 
 // @title A title that should describe the contract/interface
 /// @author The name of the author
 /// @notice Explain to an end user what this does
 /// @dev Explain to a developer any extra details
-contract Token is ERC20Interface {
-    using SafeMath for uint256;
+contract Token {
+    //contract Token is ERC20Interface {
+    //using SafeMath for uint256;
 
     string public name = "Blu Mun Token";
     string public symbol = "BLMN";
@@ -74,7 +77,11 @@ contract Token is ERC20Interface {
 
     address public owner; // NOT part of ERC20Interface/Standard
 
-    enum State {Running, Stopped, Inactive}
+    enum State {
+        Running,
+        Stopped,
+        Inactive
+    }
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(
@@ -95,20 +102,17 @@ contract Token is ERC20Interface {
         address _to,
         uint256 _value
     ) internal returns (bool success) {
-        //balanceOf[_from] -= _value;
-        balanceOf[_from] = balanceOf[_from].sub(_value);
-        //balanceOf[_to] += _value;
-        balanceOf[_to] = balanceOf[_to].add(_value);
+        balanceOf[_from] -= _value;
+        //balanceOf[_from] = balanceOf[_from].sub(_value);
+        balanceOf[_to] += _value;
+        //balanceOf[_to] = balanceOf[_to].add(_value);
         emit Transfer(_from, _to, _value);
         return true;
     }
 
     // Transfers _value amount of tokens from msg.sender to address _to, and MUST fire the Transfer event.
     // The function SHOULD throw if the message caller's account balance does not have enough tokens to spend.
-    function transfer(address _to, uint256 _value)
-        public
-        returns (bool)
-    {
+    function transfer(address _to, uint256 _value) public returns (bool) {
         require(balanceOf[msg.sender] >= _value && _value > 0);
         require(_to != address(0), "bad address");
         _transfer(msg.sender, _to, _value);
@@ -145,7 +149,8 @@ contract Token is ERC20Interface {
         // checks that the second account is a real address
         require(_to != address(0), "bad address");
         // adjusts allowance level of third account
-        allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
+        //allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
+        allowance[_from][msg.sender] = allowance[_from][msg.sender] - _value;
         // performs the transfer from first to second account
         _transfer(_from, _to, _value);
         return true;
